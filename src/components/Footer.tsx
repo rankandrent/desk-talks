@@ -23,10 +23,10 @@ export function Footer({ social }: { social?: SiteSetting['social'] }) {
           </Link>
           <div className="flex flex-col gap-6 sm:items-end">
             <div className="flex gap-7 text-[17px]">
-              <Link href="/join?type=guest" className="hover:text-sun-400">
+              <Link href="/join-as-guest" className="hover:text-sun-400">
                 Join as Guest
               </Link>
-              <Link href="/join?type=host" className="hover:text-sun-400">
+              <Link href="/join-as-host" className="hover:text-sun-400">
                 Join as Host
               </Link>
             </div>

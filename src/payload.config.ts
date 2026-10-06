@@ -71,10 +71,9 @@ const cloudflare =
     ? await getCloudflareContextFromWrangler()
     : await getCloudflareContext({ async: true })
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+const siteUrl = process.env.SITE_URL || 'http://localhost:3000'
 
 export default buildConfig({
-  serverURL: process.env.NEXT_PUBLIC_SITE_URL || '',
   admin: {
     user: Users.slug,
     importMap: {

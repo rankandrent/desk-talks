@@ -13,7 +13,18 @@ const nextConfig: NextConfig = {
   // Read more: https://opennext.js.org/cloudflare/howtos/workerd
   serverExternalPackages: ['jose', 'pg-cloudflare'],
 
-  // Your Next.js config here
+  // Old query-string join URLs -> dedicated, indexable pages
+  async redirects() {
+    return [
+      {
+        source: '/join',
+        has: [{ type: 'query', key: 'type', value: 'host' }],
+        destination: '/join-as-host',
+        permanent: true,
+      },
+      { source: '/join', destination: '/join-as-guest', permanent: true },
+    ]
+  },
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],

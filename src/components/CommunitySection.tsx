@@ -31,7 +31,7 @@ export function CommunitySection({
               We bring together founders, business leaders, and innovators who are building what’s next and
               transforming industries along the way.
             </p>
-            <Link href="/join?type=guest" className="btn-primary mt-6 px-[18px] text-[17px]">
+            <Link href="/join-as-guest" className="btn-primary mt-6 px-[18px] text-[17px]">
               Join Our Community <ArrowUpRightIcon className="size-3.5" />
             </Link>
           </div>

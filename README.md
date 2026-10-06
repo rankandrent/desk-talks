@@ -18,7 +18,7 @@ Podcast + blog website for DeskTalks, with its own dashboard (CMS).
 | `/blogs` | All articles, category filter, search, "Load More" |
 | `/blogs/[slug]` | Article, Table of Contents, Summarize with AI, CTA, FAQs (+ FAQ schema), author, share buttons, published + last updated dates |
 | `/about` | About page with testimonials (from Hosts & Guests that have a testimonial) |
-| `/join?type=guest\|host` | Join as Guest / Host forms |
+| `/join-as-guest`, `/join-as-host` | Join forms, each its own indexable page (old `/join?type=` URLs redirect) |
 | `/privacy-policy`, `/terms-and-conditions` | Legal pages (editable in dashboard) |
 | `/sitemap.xml`, `/robots.txt` | SEO |
 
@@ -57,6 +57,6 @@ Needs the **Workers Paid** plan (the Payload bundle is above the free plan's siz
    pnpm wrangler d1 create desktalks
    pnpm wrangler r2 bucket create desktalks
    ```
-3. Set secrets: `pnpm wrangler secret put PAYLOAD_SECRET` and set `NEXT_PUBLIC_SITE_URL` to the live domain.
+3. Set secrets: `pnpm wrangler secret put PAYLOAD_SECRET` and set `SITE_URL` to the live domain.
 4. After any schema change: `pnpm payload migrate:create`
 5. `pnpm run deploy` (runs migrations on D1, builds and deploys the Worker)

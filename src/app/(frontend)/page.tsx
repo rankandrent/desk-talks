@@ -36,10 +36,10 @@ export default async function HomePage() {
             inspire meaningful conversations and lasting connections.
           </p>
           <div className="mt-5 flex flex-wrap gap-[11px]">
-            <Link href="/join?type=host" className="btn-outline px-[17px] text-[17px]">
+            <Link href="/join-as-host" className="btn-outline px-[17px] text-[17px]">
               Join as Host
             </Link>
-            <Link href="/join?type=guest" className="btn-primary px-[17px] text-[17px]">
+            <Link href="/join-as-guest" className="btn-primary px-[17px] text-[17px]">
               Join as Guest
             </Link>
           </div>

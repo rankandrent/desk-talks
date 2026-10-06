@@ -31,7 +31,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/podcasts`, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${SITE_URL}/blogs`, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${SITE_URL}/about`, changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${SITE_URL}/join`, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${SITE_URL}/join-as-guest`, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${SITE_URL}/join-as-host`, changeFrequency: 'monthly', priority: 0.6 },
     ...podcasts.docs.map((doc) => ({ url: `${SITE_URL}/podcasts/${doc.slug}`, lastModified: doc.updatedAt })),
     ...posts.docs.map((doc) => ({
       url: `${SITE_URL}/blogs/${doc.slug}`,

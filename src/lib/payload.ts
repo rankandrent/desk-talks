@@ -3,4 +3,4 @@ import { getPayload } from 'payload'
 
 export const getPayloadClient = () => getPayload({ config })
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+export const SITE_URL = process.env.SITE_URL || 'http://localhost:3000'

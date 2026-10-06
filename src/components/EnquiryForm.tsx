@@ -97,7 +97,7 @@ export function EnquiryForm({
         {showJoinLink && (
           <p className="mt-4 text-[17px] text-ink-700">
             Wants to join as Host/Guest in our podcast?{' '}
-            <Link href="/join?type=guest" className="font-semibold text-teal-700 hover:underline">
+            <Link href="/join-as-guest" className="font-semibold text-teal-700 hover:underline">
               Click Here
             </Link>
           </p>
