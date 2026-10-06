@@ -47,19 +47,6 @@ After that, admins add the rest of the team from **Users → Create New** in the
 
 > Passwords use 100,000 PBKDF2 iterations (patched in `patches/payload@3.90.0.patch`) because Cloudflare Workers rejects Payload's default of 600,000.
 
-## Dashboard admins
-
-Public sign-up is disabled (`/admin/create-first-user` redirects to login). Create the first admin, or reset an admin's password, from the terminal:
-
-```bash
-npx -y -p node@22 -c 'pnpm create-admin'        # live Cloudflare database
-pnpm create-admin:local                          # local database
-```
-
-After that, admins add the rest of the team from **Users → Create New** in the dashboard.
-
-> Passwords use 100,000 PBKDF2 iterations (patched in `patches/payload@3.90.0.patch`) because Cloudflare Workers rejects Payload's default of 600,000.
-
 ## Local development
 
 Requires Node 20.9+ (Wrangler CLI commands need Node 22+) and pnpm.
