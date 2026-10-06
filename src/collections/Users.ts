@@ -10,6 +10,18 @@ export const Users: CollectionConfig = {
     group: 'Settings',
   },
   auth: true,
+  hooks: {
+    beforeChange: [
+      // The very first account (created from /admin/create-first-user) must be an admin,
+      // otherwise nobody could ever manage users. Field access strips `role` for anonymous requests.
+      async ({ data, operation, req }) => {
+        if (operation !== 'create') return data
+        const { totalDocs } = await req.payload.count({ collection: 'users', req })
+        if (totalDocs === 0) data.role = 'admin'
+        return data
+      },
+    ],
+  },
   access: {
     admin: ({ req: { user } }) => Boolean(user),
     create: isAdmin,

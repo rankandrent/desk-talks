@@ -3,6 +3,8 @@
   "main": ".open-next/worker.js",
   "name": "desktalks",
   "compatibility_date": "2025-08-15",
+  // Workers Logs: view them in Cloudflare dashboard -> Workers & Pages -> desktalks -> Logs
+  "observability": { "enabled": true },
   "vars": {
     // Public URL of the site (SEO, sitemap, share links). Change when the custom domain is live.
     "SITE_URL": "https://desktalks.clientworkt1-2f5.workers.dev",

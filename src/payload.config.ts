@@ -16,6 +16,7 @@ import { r2Storage } from '@payloadcms/storage-r2'
 
 import { YouTubeBlock } from './blocks/YouTube'
 import { Categories } from './collections/Categories'
+import { ErrorLogs, logErrorToDatabase } from './collections/ErrorLogs'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { People } from './collections/People'
@@ -90,7 +91,10 @@ export default buildConfig({
       },
     },
   },
-  collections: [Podcasts, Posts, Categories, People, Media, Pages, Submissions, Subscribers, Users],
+  collections: [Podcasts, Posts, Categories, People, Media, Pages, Submissions, Subscribers, Users, ErrorLogs],
+  hooks: {
+    afterError: [logErrorToDatabase],
+  },
   globals: [SiteSettings],
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [
