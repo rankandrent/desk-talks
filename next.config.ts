@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
   // Read more: https://opennext.js.org/cloudflare/howtos/workerd
   serverExternalPackages: ['jose', 'pg-cloudflare'],
 
+  // Build pages with one worker: parallel workers each start a Wrangler proxy and lock its
+  // local SQLite state (SQLITE_BUSY), which randomly fails `next build`.
+  experimental: { cpus: 1 },
+
   // Old query-string join URLs -> dedicated, indexable pages
   async redirects() {
     return [
@@ -23,6 +27,8 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       { source: '/join', destination: '/join-as-guest', permanent: true },
+      // Public sign-up is disabled: admins are created with `pnpm create-admin`.
+      { source: '/admin/create-first-user', destination: '/admin/login', permanent: false },
     ]
   },
   webpack: (webpackConfig) => {

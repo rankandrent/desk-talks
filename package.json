@@ -20,7 +20,9 @@
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview --env=$CLOUDFLARE_ENV",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
-    "seed": "cross-env NODE_OPTIONS=--no-deprecation payload run src/seed/index.ts"
+    "seed": "cross-env NODE_OPTIONS=--no-deprecation payload run src/seed/index.ts",
+    "create-admin": "cross-env NODE_ENV=production NODE_OPTIONS=--no-deprecation PAYLOAD_SECRET=ignore payload run src/scripts/create-admin.ts",
+    "create-admin:local": "cross-env NODE_OPTIONS=--no-deprecation payload run src/scripts/create-admin.ts"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "1.20.1",
@@ -63,7 +65,10 @@
       "sharp",
       "unrs-resolver",
       "workerd"
-    ]
+    ],
+    "patchedDependencies": {
+      "payload@3.90.0": "patches/payload@3.90.0.patch"
+    }
   },
   "cloudflare": {
     "bindings": {
