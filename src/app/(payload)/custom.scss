@@ -1,0 +1,27 @@
+/* DeskTalks dashboard theme (matches the website's yellow / teal palette) */
+:root {
+  --theme-success-500: #2d858a;
+  --theme-success-600: #11676c;
+  --theme-success-750: #0e494c;
+}
+
+/* Primary buttons in brand yellow */
+.btn--style-primary {
+  --bg-color: #ffd62d;
+  --color: #1f1f1f;
+  --hover-bg: #ebbd00;
+  --hover-color: #1f1f1f;
+}
+
+.nav__link.active,
+.nav__link:hover {
+  color: #ebbd00;
+}
+
+.template-minimal {
+  background: linear-gradient(180deg, #fffae4 0%, var(--theme-bg) 45%);
+}
+
+html[data-theme='dark'] .template-minimal {
+  background: var(--theme-bg);
+}

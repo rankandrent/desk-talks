@@ -1,0 +1,101 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@theme {
+  --font-sans: var(--next-font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-inter: var(--next-font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Figma: Colors & Shades */
+  --color-sun-700: #ebbd00;
+  --color-sun-600: #f8cc15;
+  --color-sun-500: #ffd62d;
+  --color-sun-400: #ffdc49;
+  --color-sun-300: #ffe370;
+  --color-sun-200: #fff0b4;
+  --color-sun-50: #fffae4;
+  --color-hero: #fdcd0b;
+
+  --color-teal-900: #0e494c;
+  --color-teal-800: #11676c;
+  --color-teal-700: #2d858a;
+  --color-teal-500: #49b3b9;
+  --color-teal-300: #74d3d9;
+  --color-teal-200: #a0f4fa;
+  --color-teal-50: #e4fcff;
+
+  --color-ink-900: #1f1f1f;
+  --color-ink-800: #303030;
+  --color-ink-700: #484848;
+  --color-ink-500: #6b6b6b;
+  --color-ink-300: #b3b3b3;
+  --color-ink-100: #ececec;
+  --color-ink-50: #f9f9f9;
+  --color-footer: #2b2b2b;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-white font-sans text-ink-900 antialiased;
+  }
+}
+
+@utility container-site {
+  @apply mx-auto w-full max-w-[1280px] px-4 sm:px-8 lg:px-16;
+}
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-[3px] px-4 py-2 text-base transition-colors duration-200;
+}
+@utility btn-primary {
+  @apply btn bg-sun-400 text-black hover:bg-sun-700;
+}
+@utility btn-outline {
+  @apply btn border border-black bg-white text-black hover:border-sun-400 hover:bg-sun-400;
+}
+@utility field {
+  @apply w-full rounded-[4px] bg-ink-50 px-4 py-3 text-ink-900 outline-none ring-sun-500 transition focus:ring-2;
+}
+@utility chip {
+  @apply inline-flex items-center rounded-[3px] bg-gradient-to-r from-sun-600 to-sun-700 px-3.5 py-1.5 font-inter text-xs uppercase text-black;
+}
+
+/* Article typography tuned to the blog detail design */
+.article {
+  @apply font-inter text-[17px] leading-[1.6] text-ink-700;
+}
+.article h2 {
+  @apply mt-10 mb-4 scroll-mt-28 text-[26px] leading-tight font-normal text-black;
+}
+.article h3 {
+  @apply mt-8 mb-3 scroll-mt-28 text-xl font-medium text-black;
+}
+.article h4 {
+  @apply mt-6 mb-2 text-lg font-medium text-black;
+}
+.article p {
+  @apply mb-4;
+}
+.article a {
+  @apply text-teal-700 underline underline-offset-2;
+}
+.article ul {
+  @apply mb-4 list-disc pl-6;
+}
+.article ol {
+  @apply mb-4 list-decimal pl-6;
+}
+.article blockquote {
+  @apply my-6 border-l-4 border-sun-500 bg-sun-50 px-5 py-3 italic;
+}
+.article img {
+  @apply my-6 h-auto max-w-full rounded-md;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
