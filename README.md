@@ -36,7 +36,7 @@ Podcast + blog website for DeskTalks, with its own dashboard (CMS).
 
 ## Dashboard admins
 
-Public sign-up is disabled (`/admin/create-first-user` redirects to login). Create the first admin, or reset an admin's password, from the terminal:
+Public sign-up is disabled: `/api/users/first-register` only works from `/admin/create-first-user?setup=<SETUP_KEY>` (Worker secret `SETUP_KEY`), and Payload refuses it once any user exists. You can also create the first admin, or reset an admin's password, from the terminal:
 
 ```bash
 npx -y -p node@22 -c 'pnpm create-admin'        # live Cloudflare database

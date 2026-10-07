@@ -27,8 +27,6 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       { source: '/join', destination: '/join-as-guest', permanent: true },
-      // Public sign-up is disabled: admins are created with `pnpm create-admin`.
-      { source: '/admin/create-first-user', destination: '/admin/login', permanent: false },
     ]
   },
   webpack: (webpackConfig) => {
