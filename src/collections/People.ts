@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { anyone, isStaff } from '../access'
+import { imageField } from '../fields/image'
 
 export const People: CollectionConfig = {
   slug: 'people',
@@ -35,8 +36,18 @@ export const People: CollectionConfig = {
     {
       type: 'row',
       fields: [
-        { name: 'photo', type: 'upload', relationTo: 'media' },
-        { name: 'companyLogo', type: 'upload', relationTo: 'media' },
+        imageField({
+          name: 'photo',
+          size: [800, 900],
+          minWidth: 400,
+          hint: 'Portrait (lambi) photo, chehra upar beech mein, JPG/WebP. Testimonials aur author box mein isi shape mein katti hai.',
+        }),
+        imageField({
+          name: 'companyLogo',
+          size: [400, 120],
+          minWidth: 150,
+          hint: 'Transparent PNG ya SVG, logo ke aas paas khali jagah na ho. Cards par 22px oonchai mein dikhta hai.',
+        }),
       ],
     },
     {

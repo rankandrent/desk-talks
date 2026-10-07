@@ -168,11 +168,11 @@ export interface Podcast {
   host?: (number | null) | Person;
   guests?: (number | Person)[] | null;
   /**
-   * Card image (wide banner, jaise 1280×440).
+   * 📐 1280 × 440 px · Wide banner, JPG/WebP. Podcast cards aur Next Episode banner mein isi shape mein dikhta hai.
    */
   thumbnail: number | Media;
   /**
-   * Optional. Single page ke bade banner ke liye; khali ho to thumbnail use hoga.
+   * 📐 1240 × 850 px · Optional. Single podcast page banner ka right hissa: host + guest, neeche se kate hue, JPG/WebP. Khali ho to thumbnail use hoga.
    */
   heroImage?: (number | null) | Media;
   /**
@@ -227,7 +227,13 @@ export interface Person {
    * LinkedIn profile URL
    */
   linkedin?: string | null;
+  /**
+   * 📐 800 × 900 px · Portrait (lambi) photo, chehra upar beech mein, JPG/WebP. Testimonials aur author box mein isi shape mein katti hai.
+   */
   photo?: (number | null) | Media;
+  /**
+   * 📐 400 × 120 px · Transparent PNG ya SVG, logo ke aas paas khali jagah na ho. Cards par 22px oonchai mein dikhta hai.
+   */
   companyLogo?: (number | null) | Media;
   /**
    * Agar bhara ho to About page ke testimonials slider mein dikhega.
@@ -284,6 +290,9 @@ export interface Post {
    * Blog cards par dikhne wali 2–3 lines.
    */
   excerpt: string;
+  /**
+   * 📐 1600 × 900 px · Landscape 16:9, JPG/WebP. Blog cards aur article ke upar isi shape mein dikhti hai.
+   */
   featuredImage: number | Media;
   /**
    * H2 headings khud "In this Article" (Table of Contents) mein aa jati hain.
@@ -795,6 +804,9 @@ export interface SiteSetting {
   partnerLogos?:
     | {
         name: string;
+        /**
+         * 📐 440 × 100 px · Transparent PNG ya SVG, ek rang (grey) ka logo. Teal section mein khud safaid ho jata hai.
+         */
         logo: number | Media;
         id?: string | null;
       }[]

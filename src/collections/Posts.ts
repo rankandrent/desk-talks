@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { isStaff, publishedOrStaff } from '../access'
+import { imageField } from '../fields/image'
 import { slugField } from '../fields/slug'
 import { setPublishDates } from '../hooks/publishDates'
 
@@ -41,12 +42,13 @@ export const Posts: CollectionConfig = {
               required: true,
               admin: { description: 'Blog cards par dikhne wali 2–3 lines.' },
             },
-            {
+            imageField({
               name: 'featuredImage',
-              type: 'upload',
-              relationTo: 'media',
               required: true,
-            },
+              size: [1600, 900],
+              minWidth: 800,
+              hint: 'Landscape 16:9, JPG/WebP. Blog cards aur article ke upar isi shape mein dikhti hai.',
+            }),
             {
               name: 'content',
               type: 'richText',

@@ -14,6 +14,8 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 const asset = (file: string) => path.resolve(dirname, 'assets', file)
 
 const payload = await getPayload({ config })
+// Demo images come from the design screenshot and are smaller than the editor size rules.
+const context = { skipImageSizeCheck: true }
 
 const existing = await payload.count({ collection: 'podcasts' })
 if (existing.totalDocs > 0) {
@@ -39,9 +41,18 @@ if (adminEmail && adminPassword) {
 
 payload.logger.info('Seeding media…')
 const media = {
-  thumb1: await upload('podcast-thumb-1.jpg', 'Proving Business Value in the Age of AI episode cover'),
-  thumb2: await upload('podcast-thumb-2.jpg', 'Building a Foresight or Future Research Practice episode cover'),
-  thumb3: await upload('podcast-thumb-3.jpg', 'Why Market Research & UX Research Are Finally Converging episode cover'),
+  thumb1: await upload(
+    'podcast-thumb-1.jpg',
+    'Proving Business Value in the Age of AI episode cover',
+  ),
+  thumb2: await upload(
+    'podcast-thumb-2.jpg',
+    'Building a Foresight or Future Research Practice episode cover',
+  ),
+  thumb3: await upload(
+    'podcast-thumb-3.jpg',
+    'Why Market Research & UX Research Are Finally Converging episode cover',
+  ),
   hero1: await upload('podcast-hero-1.jpg', 'Umer Khan and Hamaad Chippa'),
   servicenow: await upload('company-servicenow.png', 'ServiceNow logo'),
   insightsDesk: await upload('company-insights-desk.png', 'The Insights Desk logo'),
@@ -76,6 +87,7 @@ for (const name of ['AI Research', 'Global Networks', 'Technology', 'Design', 'S
 payload.logger.info('Seeding people…')
 const umer = await payload.create({
   collection: 'people',
+  context,
   data: {
     name: 'Umer Khan',
     designation: 'Co-founder & CEO',
@@ -86,6 +98,7 @@ const umer = await payload.create({
 })
 const hamaad = await payload.create({
   collection: 'people',
+  context,
   data: {
     name: 'Hamaad Chippa',
     designation: 'Senior Director, Business Value & Insights',
@@ -99,6 +112,7 @@ const hamaad = await payload.create({
 })
 const vidhya = await payload.create({
   collection: 'people',
+  context,
   data: {
     name: 'Vidhya Ravi',
     designation: 'Principal UX Director',
@@ -112,6 +126,7 @@ const vidhya = await payload.create({
 })
 const peter = await payload.create({
   collection: 'people',
+  context,
   data: {
     name: 'Peter Thompson',
     designation: 'Head of Research Operations',
@@ -122,6 +137,7 @@ const peter = await payload.create({
 })
 const michael = await payload.create({
   collection: 'people',
+  context,
   data: {
     name: 'Michael John',
     designation: 'Director AI Research',
@@ -141,6 +157,7 @@ const links = {
 
 await payload.create({
   collection: 'podcasts',
+  context,
   data: {
     _status: 'published',
     title: 'Proving Business Value in the Age of AI',
@@ -171,15 +188,19 @@ await payload.create({
 
 await payload.create({
   collection: 'podcasts',
+  context,
   data: {
     _status: 'published',
     title: 'Building a Foresight or Future Research Practice',
-    excerpt: 'What it takes to build a foresight function while most companies are still figuring out the present.',
+    excerpt:
+      'What it takes to build a foresight function while most companies are still figuring out the present.',
     summary: doc(
       p(
         'Vidhya Ravi, Principal UX Director at ServiceNow, joins Umer Khan to talk about building a foresight function within strategic research at a company on the front lines of AI.',
       ),
-      p('They cover how to earn stakeholder trust, which signals matter, and how foresight turns into product decisions.'),
+      p(
+        'They cover how to earn stakeholder trust, which signals matter, and how foresight turns into product decisions.',
+      ),
     ),
     host: umer.id,
     guests: [vidhya.id],
@@ -193,10 +214,12 @@ await payload.create({
 
 await payload.create({
   collection: 'podcasts',
+  context,
   data: {
     _status: 'published',
     title: 'Why Market Research & UX Research Are Finally Converging',
-    excerpt: 'Two disciplines, one question: what do customers really need? A conversation on where research is heading.',
+    excerpt:
+      'Two disciplines, one question: what do customers really need? A conversation on where research is heading.',
     summary: doc(
       p(
         'Market research and UX research have long lived in separate teams. In this episode we explore why the lines are blurring, and what that means for insight leaders.',
@@ -215,11 +238,16 @@ await payload.create({
 // Scheduled episode: appears as "Next Episode" until its release date.
 await payload.create({
   collection: 'podcasts',
+  context,
   data: {
     _status: 'published',
     title: 'Agentic AI and the Future of Enterprise Workflows',
     excerpt: 'What changes when AI stops assisting and starts acting on our behalf?',
-    summary: doc(p('A look at how agentic AI is reshaping enterprise workflows, governance and the role of people.')),
+    summary: doc(
+      p(
+        'A look at how agentic AI is reshaping enterprise workflows, governance and the role of people.',
+      ),
+    ),
     host: umer.id,
     guests: [hamaad.id],
     thumbnail: media.thumb1,
@@ -256,7 +284,9 @@ const articleBody = doc(
   p(
     "At IIEX Europe 2026, AI wasn't the future of market research. It was the present. From keynote sessions to conversations across the exhibition floor, one thing became clear: the industry has moved beyond asking whether AI belongs in research. The focus has shifted to a much bigger question.",
   ),
-  p('How do we use AI to produce research that is not only faster, but more meaningful, reliable, and actionable?'),
+  p(
+    'How do we use AI to produce research that is not only faster, but more meaningful, reliable, and actionable?',
+  ),
   p("Here are five key takeaways from this year's event."),
   h2("The Future Isn't AI vs. Researchers. It's AI with Researchers."),
   p(
@@ -273,6 +303,7 @@ const articleBody = doc(
 
 const post1 = await payload.create({
   collection: 'posts',
+  context,
   data: {
     _status: 'published',
     title: 'AI Is Transforming Research Faster Than Ever: 5 Key Takeaways from IIEX Europe 2026',
@@ -289,6 +320,7 @@ const post1 = await payload.create({
 
 await payload.create({
   collection: 'posts',
+  context,
   data: {
     _status: 'published',
     title: 'What Research Leaders Learned About AI Governance This Year',
@@ -310,6 +342,7 @@ await payload.create({
 
 await payload.create({
   collection: 'posts',
+  context,
   data: {
     _status: 'published',
     title: 'Beyond Dashboards - Why Research Is More Than Metrics',
@@ -347,9 +380,13 @@ await payload.create({
         'We may collect information you provide directly, such as your name, title, contact details and email address, as well as information collected automatically when you use our Services, such as browser type, pages viewed and access times.',
       ),
       h2('How We Use Your Information'),
-      p('We use your information to operate the Service, respond to enquiries, send newsletters you subscribe to, and improve our content.'),
+      p(
+        'We use your information to operate the Service, respond to enquiries, send newsletters you subscribe to, and improve our content.',
+      ),
       h2('Contact Us'),
-      p('If you have any questions about this Privacy Policy, please contact us through the contact form on our website.'),
+      p(
+        'If you have any questions about this Privacy Policy, please contact us through the contact form on our website.',
+      ),
     ),
   },
 })
@@ -361,9 +398,13 @@ await payload.create({
     content: doc(
       p('By accessing or using Desk Talks you agree to these Terms & Conditions.'),
       h2('Use of Content'),
-      p('All podcasts, articles and media on Desk Talks are provided for informational purposes and may not be republished without permission.'),
+      p(
+        'All podcasts, articles and media on Desk Talks are provided for informational purposes and may not be republished without permission.',
+      ),
       h2('Changes'),
-      p('We may update these terms from time to time. Continued use of the Service means you accept the updated terms.'),
+      p(
+        'We may update these terms from time to time. Continued use of the Service means you accept the updated terms.',
+      ),
     ),
   },
 })
@@ -371,6 +412,7 @@ await payload.create({
 payload.logger.info('Seeding site settings…')
 await payload.updateGlobal({
   slug: 'site-settings',
+  context,
   data: {
     partnerLogos,
     social: {

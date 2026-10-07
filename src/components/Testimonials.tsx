@@ -34,7 +34,7 @@ export function Testimonials({ items }: { items: Testimonial[] }) {
             <img
               src={item.photo}
               alt={item.name}
-              className="mx-auto aspect-[314/352] w-full max-w-[314px] rounded-[4px] bg-sun-500 object-cover"
+              className="mx-auto aspect-[314/352] w-full max-w-[314px] rounded-[4px] bg-sun-500 object-cover object-top"
             />
           )}
         </div>

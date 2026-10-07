@@ -1,6 +1,7 @@
 import type { GlobalConfig } from 'payload'
 
 import { anyone, isStaff } from '../access'
+import { imageField } from '../fields/image'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
@@ -18,7 +19,13 @@ export const SiteSettings: GlobalConfig = {
       admin: { description: '"The DeskTalk community is growing!" section ke company logos.' },
       fields: [
         { name: 'name', type: 'text', required: true },
-        { name: 'logo', type: 'upload', relationTo: 'media', required: true },
+        imageField({
+          name: 'logo',
+          required: true,
+          size: [440, 100],
+          minWidth: 200,
+          hint: 'Transparent PNG ya SVG, ek rang (grey) ka logo. Teal section mein khud safaid ho jata hai.',
+        }),
       ],
     },
     {

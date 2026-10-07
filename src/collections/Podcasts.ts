@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { isStaff, publishedOrStaff } from '../access'
+import { imageField } from '../fields/image'
 import { slugField } from '../fields/slug'
 
 export const Podcasts: CollectionConfig = {
@@ -63,19 +64,19 @@ export const Podcasts: CollectionConfig = {
         {
           label: 'Media & Links',
           fields: [
-            {
+            imageField({
               name: 'thumbnail',
-              type: 'upload',
-              relationTo: 'media',
               required: true,
-              admin: { description: 'Card image (wide banner, jaise 1280×440).' },
-            },
-            {
+              size: [1280, 440],
+              minWidth: 640,
+              hint: 'Wide banner, JPG/WebP. Podcast cards aur Next Episode banner mein isi shape mein dikhta hai.',
+            }),
+            imageField({
               name: 'heroImage',
-              type: 'upload',
-              relationTo: 'media',
-              admin: { description: 'Optional. Single page ke bade banner ke liye; khali ho to thumbnail use hoga.' },
-            },
+              size: [1240, 850],
+              minWidth: 620,
+              hint: 'Optional. Single podcast page banner ka right hissa: host + guest, neeche se kate hue, JPG/WebP. Khali ho to thumbnail use hoga.',
+            }),
             {
               name: 'links',
               type: 'group',

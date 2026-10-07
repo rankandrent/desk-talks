@@ -38,7 +38,7 @@ export function NextEpisode({ podcast }: { podcast: Podcast }) {
           </div>
           {image && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={image} alt="" className="hidden w-[320px] rounded-lg md:block" />
+            <img src={image} alt="" className="hidden aspect-[1280/440] w-[320px] rounded-lg object-cover md:block" />
           )}
         </div>
       </div>

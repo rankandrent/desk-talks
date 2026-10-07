@@ -142,7 +142,7 @@ export default async function BlogPage({ params }: Props) {
             <div className="mt-6 flex max-w-[440px] items-center gap-5 rounded-[6px] border border-ink-300 px-6 py-6 font-inter">
               {mediaUrl(author.photo) && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={mediaUrl(author.photo)} alt={author.name} className="size-[68px] rounded-full object-cover" />
+                <img src={mediaUrl(author.photo)} alt={author.name} className="size-[68px] rounded-full object-cover object-top" />
               )}
               <div>
                 <p className="flex items-center gap-1.5 font-semibold text-black">
