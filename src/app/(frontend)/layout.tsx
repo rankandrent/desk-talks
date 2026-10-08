@@ -6,7 +6,9 @@ import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { SITE_URL } from '@/lib/payload'
 import { getSettings } from '@/lib/queries'
+import { DEFAULTS, or } from '@/content/defaults'
 import { DEFAULT_OG_IMAGE, SITE_NAME } from '@/lib/seo'
+import { mediaUrl } from '@/lib/utils'
 
 import './styles.css'
 
@@ -23,7 +25,7 @@ const inter = Inter({
   display: 'swap',
 })
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: 'DeskTalks | Where Expert Conversations Become Community',
@@ -48,6 +50,19 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false },
 }
 
+// Default description and share image come from Site Settings → SEO Defaults.
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings()
+  const image = mediaUrl(settings.seo?.shareImage)
+  const images = [image ? { url: image } : DEFAULT_OG_IMAGE]
+  return {
+    ...baseMetadata,
+    description: or(settings.seo?.defaultDescription, DEFAULTS.seo.defaultDescription),
+    openGraph: { ...baseMetadata.openGraph, images },
+    twitter: { ...baseMetadata.twitter, images },
+  }
+}
+
 export const viewport: Viewport = {
   themeColor: '#ffd62d',
 }
@@ -58,9 +73,20 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" className={`${poppins.variable} ${inter.variable}`}>
       <body>
-        <Header />
+        <Header
+          nav={settings.header?.nav?.length ? settings.header.nav : [...DEFAULTS.header.nav]}
+          ctaLabel={or(settings.header?.ctaLabel, DEFAULTS.header.ctaLabel)}
+          ctaLink={or(settings.header?.ctaLink, DEFAULTS.header.ctaLink)}
+          logo={mediaUrl(settings.header?.logo)}
+        />
         <main>{children}</main>
-        <Footer social={settings.social} />
+        <Footer
+          social={settings.social}
+          links={settings.footer?.links?.length ? settings.footer.links : [...DEFAULTS.footer.links]}
+          bottomLinks={settings.footer?.bottomLinks?.length ? settings.footer.bottomLinks : [...DEFAULTS.footer.bottomLinks]}
+          copyright={or(settings.footer?.copyright, DEFAULTS.footer.copyright)}
+          logo={mediaUrl(settings.footer?.logo)}
+        />
       </body>
     </html>
   )

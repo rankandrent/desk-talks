@@ -23,6 +23,14 @@ export const Categories: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    {
+      name: 'description',
+      type: 'textarea',
+      admin: {
+        description:
+          'Optional. Category page (/podcasts?category=...) ke hero aur Google description mein dikhti hai (155 characters tak).',
+      },
+    },
     slugField('name'),
   ],
 }

@@ -34,6 +34,20 @@ Podcast + blog website for DeskTalks, with its own dashboard (CMS).
 - **Users:** multiple logins with roles. **Admin** manages everything including users; **Editor** manages content.
 - **Site Settings:** community logos, social links, blog sidebar CTA.
 
+## Editing website content
+
+Everything on the site is edited in the dashboard under **Pages**:
+
+| Dashboard | Controls |
+| --- | --- |
+| Home Page | Hero text and buttons, section headings, contact text, SEO |
+| About Page | Hero title and image, What We Do, Our Vision, SEO |
+| Podcasts Page / Blogs Page | Listing hero, "Explore more" heading, load-more button, SEO |
+| Join Pages | Banner, guest/host titles and text, SEO |
+| Site Settings | Menu, logo, footer links, Community / Subscribe / Blog CTA sections, community logos, social links, default SEO description and share image |
+
+Podcasts, Blogs, Categories (incl. category description), Hosts & Guests and Legal Pages are collections. Default text lives in `src/content/defaults.ts`; an empty field falls back to it. `pnpm fill-defaults` copies those defaults into empty dashboard fields.
+
 ## Dashboard admins
 
 Public sign-up is disabled: `/api/users/first-register` only works from `/admin/create-first-user?setup=<SETUP_KEY>` (Worker secret `SETUP_KEY`), and Payload refuses it once any user exists. You can also create the first admin, or reset an admin's password, from the terminal:

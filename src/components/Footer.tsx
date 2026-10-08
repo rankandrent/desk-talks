@@ -5,8 +5,22 @@ import type { SiteSetting } from '@/payload-types'
 import { InstagramIcon, LinkedInIcon, SoundCloudIcon, SpotifyIcon, YouTubeIcon } from './icons'
 import { Logo } from './Logo'
 
-export function Footer({ social }: { social?: SiteSetting['social'] }) {
-  const links = [
+type FooterLink = { label: string; link: string; id?: string | null }
+
+export function Footer({
+  social,
+  links: topLinks,
+  bottomLinks,
+  copyright,
+  logo,
+}: {
+  social?: SiteSetting['social']
+  links: FooterLink[]
+  bottomLinks: FooterLink[]
+  copyright: string
+  logo?: string
+}) {
+  const socialLinks = [
     { href: social?.youtube, label: 'YouTube', Icon: YouTubeIcon },
     { href: social?.linkedin, label: 'LinkedIn', Icon: LinkedInIcon },
     { href: social?.instagram, label: 'Instagram', Icon: InstagramIcon },
@@ -19,20 +33,19 @@ export function Footer({ social }: { social?: SiteSetting['social'] }) {
       <div className="container-site !px-4 py-8 sm:!px-[68px]">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <Link href="/" aria-label="DeskTalks home">
-            <Logo inverted />
+            <Logo inverted src={logo} />
           </Link>
           <div className="flex flex-col gap-6 sm:items-end">
-            <div className="flex gap-7 text-[17px]">
-              <Link href="/join-as-guest" className="hover:text-sun-400">
-                Join as Guest
-              </Link>
-              <Link href="/join-as-host" className="hover:text-sun-400">
-                Join as Host
-              </Link>
+            <div className="flex flex-wrap gap-x-7 gap-y-2 text-[17px]">
+              {topLinks.map((item) => (
+                <Link key={item.id ?? item.link} href={item.link} className="hover:text-sun-400">
+                  {item.label}
+                </Link>
+              ))}
             </div>
-            {links.length > 0 && (
+            {socialLinks.length > 0 && (
               <div className="flex items-center gap-5">
-                {links.map(({ href, label, Icon }) => (
+                {socialLinks.map(({ href, label, Icon }) => (
                   <a
                     key={label}
                     href={href!}
@@ -50,17 +63,15 @@ export function Footer({ social }: { social?: SiteSetting['social'] }) {
         </div>
 
         <div className="mt-10 flex flex-col gap-4 border-t border-white/40 pt-7 text-[17px] text-white/50 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} | All rights reserved.</p>
+          <p>
+            © {new Date().getFullYear()} | {copyright}
+          </p>
           <div className="flex flex-wrap gap-x-7 gap-y-2">
-            <Link href="/terms-and-conditions" className="hover:text-white">
-              Terms &amp; Conditions
-            </Link>
-            <Link href="/#contact" className="hover:text-white">
-              Contact Us
-            </Link>
-            <Link href="/privacy-policy" className="hover:text-white">
-              Privacy Policy
-            </Link>
+            {bottomLinks.map((item) => (
+              <Link key={item.id ?? item.link} href={item.link} className="hover:text-white">
+                {item.label}
+              </Link>
+            ))}
           </div>
         </div>
       </div>

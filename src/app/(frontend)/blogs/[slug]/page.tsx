@@ -11,7 +11,8 @@ import { SummarizeWithAI } from '@/components/SummarizeWithAI'
 import { JsonLd } from '@/components/JsonLd'
 import { TableOfContents } from '@/components/TableOfContents'
 import { SITE_URL } from '@/lib/payload'
-import { getPostBySlug, getPosts, getSettings } from '@/lib/queries'
+import { DEFAULTS, or } from '@/content/defaults'
+import { getBlogsPage, getHomePage, getPostBySlug, getPosts, getSettings } from '@/lib/queries'
 import { absoluteUrl, breadcrumbJsonLd, buildMetadata } from '@/lib/seo'
 import { categoryOf, formatDate, mediaAlt, mediaUrl, personOf } from '@/lib/utils'
 
@@ -44,9 +45,11 @@ export default async function BlogPage({ params }: Props) {
 
   const category = categoryOf(post.category)
   const author = personOf(post.author)
-  const [related, settings] = await Promise.all([
+  const [related, settings, listingCopy, home] = await Promise.all([
     getPosts({ category: category?.slug ?? undefined, exclude: post.id, limit: 3 }),
     getSettings(),
+    getBlogsPage(),
+    getHomePage(),
   ])
   const more =
     related.docs.length < 3
@@ -61,7 +64,12 @@ export default async function BlogPage({ params }: Props) {
   const faqs = post.faqs ?? []
   const toc = [...extractToc(post.content), ...(faqs.length ? [{ id: 'faqs', text: 'Frequently Asked Questions' }] : [])]
   const url = `${SITE_URL}/blogs/${post.slug}`
-  const cta = settings.blogCta
+  const cta = {
+    heading: or(settings.blogCta?.heading, DEFAULTS.blogCta.heading),
+    text: or(settings.blogCta?.text, DEFAULTS.blogCta.text),
+    buttonLabel: or(settings.blogCta?.buttonLabel, DEFAULTS.blogCta.buttonLabel),
+    buttonUrl: or(settings.blogCta?.buttonUrl, DEFAULTS.blogCta.buttonUrl),
+  }
   const showUpdated = Boolean(post.contentUpdatedAt)
   const words = extractText(post.content).split(/\s+/).filter(Boolean).length
   const readMinutes = Math.max(1, Math.round(words / 220))
@@ -219,10 +227,10 @@ export default async function BlogPage({ params }: Props) {
         <section className="container-site pt-[74px] pb-16">
           <div className="text-center">
             <span className="chip gap-2 px-2.5 py-1.5 text-[16px] normal-case">
-              <span className="size-1.5 rounded-full bg-black" /> Our Blogs
+              <span className="size-1.5 rounded-full bg-black" /> {or(home.blogs?.label, DEFAULTS.home.blogs.label)}
             </span>
             <h2 className="mt-5 font-inter text-[34px] font-semibold text-ink-900 sm:text-[48px]">
-              Explore More Blogs
+              {or(listingCopy.moreHeading, DEFAULTS.blogs.moreHeading)}
             </h2>
           </div>
           <div className="mt-11 grid gap-6 md:grid-cols-2 lg:grid-cols-3">

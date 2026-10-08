@@ -44,6 +44,7 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       { source: '/join', destination: '/join-as-guest', permanent: true },
+      { source: '/contact', destination: '/#contact', permanent: true },
     ]
   },
   webpack: (webpackConfig) => {

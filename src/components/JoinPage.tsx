@@ -1,41 +1,37 @@
-import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { EnquiryForm } from '@/components/EnquiryForm'
-import { buildMetadata } from '@/lib/seo'
+import { DEFAULTS, or } from '@/content/defaults'
+import { getJoinPages } from '@/lib/queries'
+import { pageMetadata } from '@/lib/seo'
 import { cn } from '@/lib/utils'
 
 export type JoinType = 'guest' | 'host'
 
-export const JOIN_PAGES: Record<JoinType, { path: string; tab: string; title: string; text: string; metadata: Metadata }> = {
-  guest: {
-    path: '/join-as-guest',
-    tab: 'Join as Guest',
-    title: 'Join Us as a Podcast Guest',
-    text: 'Have expertise, experience, or a story worth sharing? We’re always looking for industry leaders, specialists, founders, and change-makers to join our conversations.',
-    metadata: buildMetadata({
-      title: 'Join as a Podcast Guest',
-      description:
-        'Share your expertise on DeskTalks. We invite industry leaders, specialists, founders and change-makers to join our podcast conversations on tech and leadership.',
-      path: '/join-as-guest',
-    }),
-  },
-  host: {
-    path: '/join-as-host',
-    tab: 'Join as Host',
-    title: 'Become a Podcast Host',
-    text: 'Have a perspective worth sharing and a passion for meaningful conversations? Join our podcast community as a host and help bring expert voices and ideas to the forefront.',
-    metadata: buildMetadata({
-      title: 'Become a Podcast Host',
-      description:
-        'Become a DeskTalks podcast host. Lead meaningful conversations with tech leaders and bring expert voices and ideas to the forefront.',
-      path: '/join-as-host',
-    }),
-  },
+const PATHS: Record<JoinType, string> = { guest: '/join-as-guest', host: '/join-as-host' }
+
+/** Text for one join page from the "Join Pages" global, falling back to the defaults. */
+const copyFor = async (type: JoinType) => {
+  const data = await getJoinPages()
+  const page = data[type]
+  const D = DEFAULTS.join
+  return {
+    banner: or(data.banner, D.banner),
+    tab: { guest: or(data.guest?.tab, D.guest.tab), host: or(data.host?.tab, D.host.tab) },
+    title: or(page?.title, D[type].title),
+    text: or(page?.text, D[type].text),
+    seoTitle: or(page?.seoTitle, D[type].seoTitle),
+    seoDescription: or(page?.seoDescription, D[type].seoDescription),
+  }
 }
 
-export function JoinPage({ type }: { type: JoinType }) {
-  const copy = JOIN_PAGES[type]
+export const joinMetadata = async (type: JoinType) => {
+  const copy = await copyFor(type)
+  return pageMetadata({ title: copy.seoTitle, description: copy.seoDescription, path: PATHS[type] })
+}
+
+export async function JoinPage({ type }: { type: JoinType }) {
+  const copy = await copyFor(type)
 
   const tab = (active: boolean) =>
     cn(
@@ -47,7 +43,7 @@ export function JoinPage({ type }: { type: JoinType }) {
     <>
       <section className="bg-teal-700">
         <p className="container-site py-16 text-center text-[30px] leading-[1.3] font-medium text-white sm:py-[86px] sm:text-[50px]">
-          Whether you’re here to host or share your expertise, we’d love to hear from you.
+          {copy.banner}
         </p>
       </section>
 
@@ -57,12 +53,12 @@ export function JoinPage({ type }: { type: JoinType }) {
             {(['host', 'guest'] as const).map((key) => (
               <Link
                 key={key}
-                href={JOIN_PAGES[key].path}
+                href={PATHS[key]}
                 scroll={false}
                 aria-current={type === key ? 'page' : undefined}
                 className={tab(type === key)}
               >
-                {JOIN_PAGES[key].tab}
+                {copy.tab[key]}
               </Link>
             ))}
           </div>

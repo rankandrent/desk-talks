@@ -83,6 +83,8 @@ export const buildMetadata = ({
   publishedTime,
   modifiedTime,
   fullTitle,
+  fallbackImage,
+  fallbackDescription,
 }: {
   title: string
   description?: string | null
@@ -93,9 +95,12 @@ export const buildMetadata = ({
   modifiedTime?: string | null
   /** Use the title exactly as given (no " | DeskTalks"). */
   fullTitle?: boolean
+  /** Site-wide defaults from Site Settings → SEO Defaults. */
+  fallbackImage?: string | null
+  fallbackDescription?: string | null
 }): Metadata => {
-  const desc = metaDescription(description)
-  const images = [image ? { url: image } : DEFAULT_OG_IMAGE]
+  const desc = metaDescription(description || fallbackDescription)
+  const images = [image ? { url: image } : fallbackImage ? { url: fallbackImage } : DEFAULT_OG_IMAGE]
   return {
     title: fullTitle ? { absolute: title } : pageTitle(title),
     description: desc,
@@ -115,3 +120,29 @@ export const buildMetadata = ({
     twitter: { card: 'summary_large_image', title, description: desc, images },
   }
 }
+
+/** buildMetadata + the site-wide default share image and description from the dashboard. */
+export const pageMetadata = async (args: Parameters<typeof buildMetadata>[0]): Promise<Metadata> => {
+  const { getSettings } = await import('./queries')
+  const { mediaUrl } = await import('./utils')
+  const settings = await getSettings()
+  return buildMetadata({
+    ...args,
+    fallbackImage: mediaUrl(settings.seo?.shareImage),
+    fallbackDescription: settings.seo?.defaultDescription,
+  })
+}
+
+/** SEO tab of a page global (title / description / image), falling back to defaults. */
+export const globalMeta = (
+  meta: { title?: string | null; description?: string | null; image?: unknown } | null | undefined,
+  fallback: { title: string; description: string },
+) => ({
+  title: meta?.title || fallback.title,
+  description: meta?.description || fallback.description,
+  // Image only counts when populated (depth >= 1); a bare ID has no URL to use.
+  image:
+    meta?.image && typeof meta.image === 'object' && 'url' in meta.image
+      ? ((meta.image as { url?: string | null }).url ?? undefined)
+      : undefined,
+})

@@ -1,6 +1,8 @@
-import { JOIN_PAGES, JoinPage } from '@/components/JoinPage'
+import { JoinPage, joinMetadata } from '@/components/JoinPage'
 
-export const metadata = JOIN_PAGES.guest.metadata
+export const revalidate = 3600
+
+export const generateMetadata = () => joinMetadata('guest')
 
 export default function JoinAsGuestPage() {
   return <JoinPage type="guest" />

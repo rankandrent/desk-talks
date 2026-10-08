@@ -104,9 +104,19 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
+    'home-page': HomePage;
+    'about-page': AboutPage;
+    'podcasts-page': PodcastsPage;
+    'blogs-page': BlogsPage;
+    'join-pages': JoinPage;
     'site-settings': SiteSetting;
   };
   globalsSelect: {
+    'home-page': HomePageSelect<false> | HomePageSelect<true>;
+    'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
+    'podcasts-page': PodcastsPageSelect<false> | PodcastsPageSelect<true>;
+    'blogs-page': BlogsPageSelect<false> | BlogsPageSelect<true>;
+    'join-pages': JoinPagesSelect<false> | JoinPagesSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
   locale: null;
@@ -272,6 +282,10 @@ export interface Media {
 export interface Category {
   id: number;
   name: string;
+  /**
+   * Optional. Category page (/podcasts?category=...) ke hero aur Google description mein dikhti hai (155 characters tak).
+   */
+  description?: string | null;
   /**
    * URL ka hissa. Khali chhorein to "name" se khud ban jayega.
    */
@@ -636,6 +650,7 @@ export interface PostsSelect<T extends boolean = true> {
  */
 export interface CategoriesSelect<T extends boolean = true> {
   name?: T;
+  description?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -793,11 +808,253 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Homepage ka saara text. Podcasts aur blogs khud latest content se aate hain.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page".
+ */
+export interface HomePage {
+  id: number;
+  /**
+   * Right side par "Featured" podcast dikhta hai (Podcasts mein Featured tick karein).
+   */
+  hero?: {
+    title?: string | null;
+    text?: string | null;
+    hostButtonLabel?: string | null;
+    hostButtonLink?: string | null;
+    guestButtonLabel?: string | null;
+    guestButtonLink?: string | null;
+  };
+  podcasts?: {
+    heading?: string | null;
+    buttonLabel?: string | null;
+  };
+  blogs?: {
+    label?: string | null;
+    heading?: string | null;
+  };
+  contact?: {
+    heading?: string | null;
+    text?: string | null;
+    joinPrompt?: string | null;
+    joinLinkLabel?: string | null;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * About Us page. Testimonials "Hosts & Guests" se aate hain (jin ka Testimonial bhara ho).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page".
+ */
+export interface AboutPage {
+  id: number;
+  hero?: {
+    title?: string | null;
+    /**
+     * 📐 1424 × 688 px · Optional. Yellow hero ka right hissa (guests ki photos). Khali ho to default image.
+     */
+    image?: (number | null) | Media;
+  };
+  whatWeDo?: {
+    heading?: string | null;
+    text?: string | null;
+    /**
+     * 📐 1132 × 576 px · Optional. Event / stage ki landscape photo. Khali ho to default image.
+     */
+    image?: (number | null) | Media;
+  };
+  vision?: {
+    heading?: string | null;
+    /**
+     * Khali line chhorne se naya paragraph banta hai.
+     */
+    text?: string | null;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Podcasts listing page (/podcasts) ka text. Episodes "Podcasts" collection se aate hain.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "podcasts-page".
+ */
+export interface PodcastsPage {
+  id: number;
+  hero?: {
+    title?: string | null;
+    description?: string | null;
+  };
+  moreHeading?: string | null;
+  loadMoreLabel?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Blogs listing page (/blogs) ka text. Articles "Blogs" collection se aate hain.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogs-page".
+ */
+export interface BlogsPage {
+  id: number;
+  hero?: {
+    title?: string | null;
+    description?: string | null;
+  };
+  moreHeading?: string | null;
+  loadMoreLabel?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * /join-as-guest aur /join-as-host pages ka text.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "join-pages".
+ */
+export interface JoinPage {
+  id: number;
+  banner?: string | null;
+  guest?: {
+    tab?: string | null;
+    title?: string | null;
+    text?: string | null;
+    seoTitle?: string | null;
+    seoDescription?: string | null;
+  };
+  host?: {
+    tab?: string | null;
+    title?: string | null;
+    text?: string | null;
+    seoTitle?: string | null;
+    seoDescription?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Poori website par aane wali cheezein: menu, footer, shared sections, social links aur SEO.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".
  */
 export interface SiteSetting {
   id: number;
+  header?: {
+    /**
+     * 📐 300 × 120 px · Optional. Transparent PNG/SVG logo. Khali ho to "DESK TALKS." text logo dikhega.
+     */
+    logo?: (number | null) | Media;
+    /**
+     * Upar wale menu ke links, isi tarteeb mein.
+     */
+    nav?:
+      | {
+          label: string;
+          /**
+           * Jaise /about, /#contact ya https://...
+           */
+          link: string;
+          id?: string | null;
+        }[]
+      | null;
+    ctaLabel?: string | null;
+    ctaLink?: string | null;
+  };
+  footer?: {
+    /**
+     * 📐 300 × 120 px · Optional. Dark footer ke liye safaid (white) logo, transparent PNG/SVG.
+     */
+    logo?: (number | null) | Media;
+    /**
+     * Footer mein logo ke saath wale links.
+     */
+    links?:
+      | {
+          label: string;
+          /**
+           * Jaise /about, /#contact ya https://...
+           */
+          link: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Copyright line ke saath wale links.
+     */
+    bottomLinks?:
+      | {
+          label: string;
+          /**
+           * Jaise /about, /#contact ya https://...
+           */
+          link: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Saal (year) khud aage lag jata hai.
+     */
+    copyright?: string | null;
+  };
+  community?: {
+    title?: string | null;
+    text?: string | null;
+    buttonLabel?: string | null;
+    buttonLink?: string | null;
+    /**
+     * 📐 720 × 768 px · Optional. Transparent PNG (globe / people graphic). Khali ho to default graphic dikhega.
+     */
+    image?: (number | null) | Media;
+  };
+  subscribe?: {
+    heading?: string | null;
+    placeholder?: string | null;
+    buttonLabel?: string | null;
+    successMessage?: string | null;
+  };
+  blogCta?: {
+    heading?: string | null;
+    text?: string | null;
+    buttonLabel?: string | null;
+    buttonUrl?: string | null;
+  };
   /**
    * "The DeskTalk community is growing!" section ke company logos.
    */
@@ -811,6 +1068,9 @@ export interface SiteSetting {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Footer ke icons. Khali chhora hua icon nahi dikhega.
+   */
   social?: {
     youtube?: string | null;
     linkedin?: string | null;
@@ -818,20 +1078,240 @@ export interface SiteSetting {
     soundcloud?: string | null;
     spotify?: string | null;
   };
-  blogCta?: {
-    heading?: string | null;
-    text?: string | null;
-    buttonLabel?: string | null;
-    buttonUrl?: string | null;
+  seo?: {
+    /**
+     * Jin pages ki apni description na ho, un par Google mein yeh dikhegi (155 characters tak).
+     */
+    defaultDescription?: string | null;
+    /**
+     * 📐 1200 × 630 px · Facebook/LinkedIn/WhatsApp par link share karne par dikhne wali image. Khali ho to default image.
+     */
+    shareImage?: (number | null) | Media;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page_select".
+ */
+export interface HomePageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        hostButtonLabel?: T;
+        hostButtonLink?: T;
+        guestButtonLabel?: T;
+        guestButtonLink?: T;
+      };
+  podcasts?:
+    | T
+    | {
+        heading?: T;
+        buttonLabel?: T;
+      };
+  blogs?:
+    | T
+    | {
+        label?: T;
+        heading?: T;
+      };
+  contact?:
+    | T
+    | {
+        heading?: T;
+        text?: T;
+        joinPrompt?: T;
+        joinLinkLabel?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page_select".
+ */
+export interface AboutPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+      };
+  whatWeDo?:
+    | T
+    | {
+        heading?: T;
+        text?: T;
+        image?: T;
+      };
+  vision?:
+    | T
+    | {
+        heading?: T;
+        text?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "podcasts-page_select".
+ */
+export interface PodcastsPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  moreHeading?: T;
+  loadMoreLabel?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogs-page_select".
+ */
+export interface BlogsPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  moreHeading?: T;
+  loadMoreLabel?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "join-pages_select".
+ */
+export interface JoinPagesSelect<T extends boolean = true> {
+  banner?: T;
+  guest?:
+    | T
+    | {
+        tab?: T;
+        title?: T;
+        text?: T;
+        seoTitle?: T;
+        seoDescription?: T;
+      };
+  host?:
+    | T
+    | {
+        tab?: T;
+        title?: T;
+        text?: T;
+        seoTitle?: T;
+        seoDescription?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
+  header?:
+    | T
+    | {
+        logo?: T;
+        nav?:
+          | T
+          | {
+              label?: T;
+              link?: T;
+              id?: T;
+            };
+        ctaLabel?: T;
+        ctaLink?: T;
+      };
+  footer?:
+    | T
+    | {
+        logo?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              link?: T;
+              id?: T;
+            };
+        bottomLinks?:
+          | T
+          | {
+              label?: T;
+              link?: T;
+              id?: T;
+            };
+        copyright?: T;
+      };
+  community?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        buttonLabel?: T;
+        buttonLink?: T;
+        image?: T;
+      };
+  subscribe?:
+    | T
+    | {
+        heading?: T;
+        placeholder?: T;
+        buttonLabel?: T;
+        successMessage?: T;
+      };
+  blogCta?:
+    | T
+    | {
+        heading?: T;
+        text?: T;
+        buttonLabel?: T;
+        buttonUrl?: T;
+      };
   partnerLogos?:
     | T
     | {
@@ -848,13 +1328,11 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         soundcloud?: T;
         spotify?: T;
       };
-  blogCta?:
+  seo?:
     | T
     | {
-        heading?: T;
-        text?: T;
-        buttonLabel?: T;
-        buttonUrl?: T;
+        defaultDescription?: T;
+        shareImage?: T;
       };
   updatedAt?: T;
   createdAt?: T;

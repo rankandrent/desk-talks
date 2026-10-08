@@ -12,6 +12,18 @@ export const getSettings = cache(async () => {
   return payload.findGlobal({ slug: 'site-settings', depth: 1 })
 })
 
+const pageGlobal = <S extends 'home-page' | 'about-page' | 'podcasts-page' | 'blogs-page' | 'join-pages'>(slug: S) =>
+  cache(async () => {
+    const payload = await getPayloadClient()
+    return payload.findGlobal({ slug, depth: 1 })
+  })
+
+export const getHomePage = pageGlobal('home-page')
+export const getAboutPage = pageGlobal('about-page')
+export const getPodcastsPage = pageGlobal('podcasts-page')
+export const getBlogsPage = pageGlobal('blogs-page')
+export const getJoinPages = pageGlobal('join-pages')
+
 export const getCategories = cache(async () => {
   const payload = await getPayloadClient()
   const { docs } = await payload.find({ collection: 'categories', limit: 100, sort: 'name', depth: 0 })

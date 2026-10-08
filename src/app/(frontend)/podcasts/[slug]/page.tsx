@@ -13,7 +13,8 @@ import { Waveform } from '@/components/Waveform'
 import { JsonLd } from '@/components/JsonLd'
 import { soundCloudEmbed, spotifyEmbed, youTubeEmbed, youTubeId } from '@/lib/embeds'
 import { SITE_URL } from '@/lib/payload'
-import { countPodcastsInCategory, getPodcastBySlug, getPodcasts, getSettings } from '@/lib/queries'
+import { DEFAULTS, or } from '@/content/defaults'
+import { countPodcastsInCategory, getPodcastBySlug, getPodcasts, getPodcastsPage, getSettings } from '@/lib/queries'
 import { absoluteUrl, breadcrumbJsonLd, buildMetadata } from '@/lib/seo'
 import { categoryOf, formatDate, mediaUrl, personOf } from '@/lib/utils'
 
@@ -50,10 +51,11 @@ export default async function PodcastPage({ params }: Props) {
   if (!podcast || new Date(podcast.releaseDate) > new Date()) notFound()
 
   const category = categoryOf(podcast.category)
-  const [related, categoryCount, settings] = await Promise.all([
+  const [related, categoryCount, settings, listingCopy] = await Promise.all([
     getPodcasts({ category: category?.slug ?? undefined, exclude: podcast.id, limit: 3 }),
     category ? countPodcastsInCategory(category.id) : Promise.resolve(0),
     getSettings(),
+    getPodcastsPage(),
   ])
   // Fill "Explore more" with latest episodes when the category has fewer than three.
   const more =
@@ -196,7 +198,7 @@ export default async function PodcastPage({ params }: Props) {
       {more.length > 0 && (
         <section className="pt-20 pb-16">
           <h2 className="text-center font-inter text-[34px] font-semibold text-ink-900 sm:text-[48px]">
-            Explore More Podcast
+            {or(listingCopy.moreHeading, DEFAULTS.podcasts.moreHeading)}
           </h2>
           <div className="mx-auto mt-8 grid max-w-[1280px] gap-5 px-4 sm:grid-cols-2 sm:px-8 lg:grid-cols-3 lg:px-[65px]">
             {more.map((p) => (
@@ -215,7 +217,7 @@ export default async function PodcastPage({ params }: Props) {
       )}
 
       <div className="pt-6 pb-[90px]">
-        <CommunitySection logos={settings.partnerLogos} />
+        <CommunitySection settings={settings} />
       </div>
     </>
   )

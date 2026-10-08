@@ -25,6 +25,7 @@ import { Posts } from './collections/Posts'
 import { Submissions } from './collections/Submissions'
 import { Subscribers } from './collections/Subscribers'
 import { Users } from './collections/Users'
+import { AboutPage, BlogsPage, HomePage, JoinPages, PodcastsPage } from './globals/Pages'
 import { SiteSettings } from './globals/SiteSettings'
 import { revalidateAfterChange, revalidateAfterDelete, revalidateGlobal } from './hooks/revalidate'
 
@@ -112,12 +113,10 @@ export default buildConfig({
   hooks: {
     afterError: [logErrorToDatabase],
   },
-  globals: [
-    {
-      ...SiteSettings,
-      hooks: { ...SiteSettings.hooks, afterChange: [...(SiteSettings.hooks?.afterChange ?? []), revalidateGlobal] },
-    },
-  ],
+  globals: [HomePage, AboutPage, PodcastsPage, BlogsPage, JoinPages, SiteSettings].map((global) => ({
+    ...global,
+    hooks: { ...global.hooks, afterChange: [...(global.hooks?.afterChange ?? []), revalidateGlobal] },
+  })),
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [
       ...defaultFeatures.filter((feature) => feature.key !== 'heading'),
@@ -139,11 +138,16 @@ export default buildConfig({
     }),
     seoPlugin({
       collections: ['posts', 'podcasts', 'pages'],
+      globals: ['home-page', 'about-page', 'podcasts-page', 'blogs-page'],
       uploadsCollection: 'media',
       tabbedUI: true,
       generateTitle: ({ doc }) => (doc?.title ? `${doc.title} | DeskTalks` : 'DeskTalks'),
       generateDescription: ({ doc }) => doc?.excerpt || '',
-      generateURL: ({ doc, collectionSlug }) => {
+      generateURL: ({ doc, collectionSlug, globalSlug }) => {
+        if (globalSlug) {
+          const paths: Record<string, string> = { 'home-page': '', 'about-page': 'about', 'podcasts-page': 'podcasts', 'blogs-page': 'blogs' }
+          return `${siteUrl}/${paths[globalSlug] ?? ''}`
+        }
         const base = collectionSlug === 'posts' ? 'blogs' : collectionSlug === 'podcasts' ? 'podcasts' : ''
         return `${siteUrl}/${base ? `${base}/` : ''}${doc?.slug ?? ''}`
       },

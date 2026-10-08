@@ -6,37 +6,39 @@ import { EnquiryForm } from '@/components/EnquiryForm'
 import { ArrowUpRightIcon, PlayIcon } from '@/components/icons'
 import { NextEpisode } from '@/components/NextEpisode'
 import { PodcastCarousel } from '@/components/PodcastCarousel'
-import { SubscribeBox } from '@/components/SubscribeBox'
+import { SubscribeSection } from '@/components/SubscribeSection'
 import {
   getFeaturedPodcast,
   getNextPodcast,
   getPodcasts,
+  getHomePage,
   getPosts,
   getSettings,
 } from '@/lib/queries'
 import { JsonLd } from '@/components/JsonLd'
-import { buildMetadata, organizationJsonLd, websiteJsonLd } from '@/lib/seo'
+import { DEFAULTS, or } from '@/content/defaults'
+import { globalMeta, organizationJsonLd, pageMetadata, websiteJsonLd } from '@/lib/seo'
 import { mediaAlt, mediaUrl } from '@/lib/utils'
 
 // Cached; refreshed every 10 min (Next Episode depends on time) and on every publish.
 export const revalidate = 600
 
-export const metadata = buildMetadata({
-  title: 'DeskTalks | Where Expert Conversations Become Community',
-  fullTitle: true,
-  description:
-    'DeskTalks podcast: conversations with tech leaders from startups to Fortune 500 companies on AI, research, technology and leadership. Listen, read and join.',
-  path: '/',
-})
+export async function generateMetadata() {
+  const meta = globalMeta((await getHomePage()).meta, DEFAULTS.home.seo)
+  return pageMetadata({ ...meta, fullTitle: true, path: '/' })
+}
 
 export default async function HomePage() {
-  const [featured, nextPodcast, podcasts, posts, settings] = await Promise.all([
+  const [featured, nextPodcast, podcasts, posts, settings, page] = await Promise.all([
     getFeaturedPodcast(),
     getNextPodcast(),
     getPodcasts({ limit: 9 }),
     getPosts({ limit: 3 }),
     getSettings(),
+    getHomePage(),
   ])
+  const D = DEFAULTS.home
+  const { hero, podcasts: podcastsSection, blogs, contact } = page
 
   const heroImage = mediaUrl(featured?.heroImage) ?? mediaUrl(featured?.thumbnail)
 
@@ -47,18 +49,23 @@ export default async function HomePage() {
       <section className="container-site grid items-center gap-12 pt-14 pb-20 lg:grid-cols-[1fr_518px] lg:gap-[60px] lg:pt-[75px] lg:pl-[99px]">
         <div>
           <h1 className="text-[40px] leading-[1.15] font-medium text-black sm:text-[53px]">
-            Where Expert Conversations Become Community
+            {or(hero?.title, D.hero.title)}
           </h1>
           <p className="mt-7 max-w-[410px] text-[16px] leading-[1.4] text-ink-700">
-            Discover expert insights through podcasts, connect with a global community, and join
-            events that inspire meaningful conversations and lasting connections.
+            {or(hero?.text, D.hero.text)}
           </p>
           <div className="mt-5 flex flex-wrap gap-[11px]">
-            <Link href="/join-as-host" className="btn-outline px-[17px] text-[17px]">
-              Join as Host
+            <Link
+              href={or(hero?.hostButtonLink, D.hero.hostButtonLink)}
+              className="btn-outline px-[17px] text-[17px]"
+            >
+              {or(hero?.hostButtonLabel, D.hero.hostButtonLabel)}
             </Link>
-            <Link href="/join-as-guest" className="btn-primary px-[17px] text-[17px]">
-              Join as Guest
+            <Link
+              href={or(hero?.guestButtonLink, D.hero.guestButtonLink)}
+              className="btn-primary px-[17px] text-[17px]"
+            >
+              {or(hero?.guestButtonLabel, D.hero.guestButtonLabel)}
             </Link>
           </div>
         </div>
@@ -92,29 +99,29 @@ export default async function HomePage() {
 
       {/* Podcasts */}
       <section className="pt-8 pb-24">
-        <h2 className="container-site text-center text-[34px] leading-[1.2] font-semibold text-black sm:text-[50px]">
-          Listen to the voices shaping the
-          <br className="hidden md:block" /> Future of Tech &amp; leadership
+        <h2 className="container-site max-w-[860px] text-center text-[34px] leading-[1.2] font-semibold text-balance text-black sm:text-[50px]">
+          {or(podcastsSection?.heading, D.podcasts.heading)}
         </h2>
         <PodcastCarousel podcasts={podcasts.docs} />
         <div className="mt-9 text-center">
           <Link href="/podcasts" className="btn-outline px-[17px] text-[17px]">
-            View All Podcasts <ArrowUpRightIcon className="size-3.5" />
+            {or(podcastsSection?.buttonLabel, D.podcasts.buttonLabel)}{' '}
+            <ArrowUpRightIcon className="size-3.5" />
           </Link>
         </div>
       </section>
 
-      <CommunitySection logos={settings.partnerLogos} />
+      <CommunitySection settings={settings} />
 
       {/* Blogs */}
       {posts.docs.length > 0 && (
         <section className="container-site pt-[74px] pb-20">
           <div className="text-center">
             <span className="chip gap-2 px-2.5 py-1.5 text-[16px] normal-case">
-              <span className="size-1.5 rounded-full bg-black" /> Our Blogs
+              <span className="size-1.5 rounded-full bg-black" /> {or(blogs?.label, D.blogs.label)}
             </span>
             <h2 className="mt-5 font-inter text-[34px] font-semibold text-ink-900 sm:text-[48px]">
-              Explore Blogs from experts
+              {or(blogs?.heading, D.blogs.heading)}
             </h2>
           </div>
           <div className="mt-11 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -130,19 +137,22 @@ export default async function HomePage() {
         <div className="grid gap-10 lg:grid-cols-[1fr_544px] lg:gap-[90px]">
           <div>
             <h2 className="text-[40px] leading-[1.2] font-semibold text-black sm:text-[50px]">
-              How can we help you today?
+              {or(contact?.heading, D.contact.heading)}
             </h2>
             <p className="mt-6 max-w-[340px] text-[16px] leading-[1.4] text-ink-700">
-              Have a question, partnership idea, or just want to learn more? Send us a message and
-              our team will get back to you.
+              {or(contact?.text, D.contact.text)}
             </p>
           </div>
-          <EnquiryForm type="contact" showJoinLink />
+          <EnquiryForm
+            type="contact"
+            joinPrompt={or(contact?.joinPrompt, D.contact.joinPrompt)}
+            joinLinkLabel={or(contact?.joinLinkLabel, D.contact.joinLinkLabel)}
+          />
         </div>
       </section>
 
       <div className="pt-16 pb-[120px]">
-        <SubscribeBox />
+        <SubscribeSection />
       </div>
     </>
   )

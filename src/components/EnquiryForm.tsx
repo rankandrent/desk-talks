@@ -30,10 +30,13 @@ const Field = ({
 
 export function EnquiryForm({
   type,
-  showJoinLink = false,
+  joinPrompt,
+  joinLinkLabel,
 }: {
   type: 'contact' | 'guest' | 'host'
-  showJoinLink?: boolean
+  /** When set, shows "<joinPrompt> <joinLinkLabel>" under the button (homepage contact form). */
+  joinPrompt?: string
+  joinLinkLabel?: string
 }) {
   const [state, action, pending] = useActionState(submitEnquiry, null)
 
@@ -94,11 +97,11 @@ export function EnquiryForm({
         >
           {pending ? 'Sending…' : 'Submit'}
         </button>
-        {showJoinLink && (
+        {joinPrompt && (
           <p className="mt-4 text-[17px] text-ink-700">
-            Wants to join as Host/Guest in our podcast?{' '}
+            {joinPrompt}{' '}
             <Link href="/join-as-guest" className="font-semibold text-teal-700 hover:underline">
-              Click Here
+              {joinLinkLabel}
             </Link>
           </p>
         )}

@@ -4,10 +4,11 @@ import { BlogCard } from '@/components/BlogCard'
 import { Filters } from '@/components/Filters'
 import { LoadMore } from '@/components/LoadMore'
 import { PageHero } from '@/components/PageHero'
-import { SubscribeBox } from '@/components/SubscribeBox'
-import { buildMetadata, itemListJsonLd } from '@/lib/seo'
+import { SubscribeSection } from '@/components/SubscribeSection'
+import { DEFAULTS, or } from '@/content/defaults'
+import { globalMeta, itemListJsonLd, pageMetadata } from '@/lib/seo'
 import { JsonLd } from '@/components/JsonLd'
-import { getCategories, getPosts, PAGE_SIZE } from '@/lib/queries'
+import { getBlogsPage, getCategories, getPosts, PAGE_SIZE } from '@/lib/queries'
 
 export const dynamic = 'force-dynamic'
 
@@ -17,19 +18,17 @@ type Props = { searchParams: Promise<{ category?: string; q?: string; page?: str
 // canonical; search and paging point back to the clean URL.
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const { category, q } = await searchParams
-  const match = category ? (await getCategories()).find((c) => c.slug === category) : undefined
+  const [categories, page] = await Promise.all([getCategories(), getBlogsPage()])
+  const match = category ? categories.find((c) => c.slug === category) : undefined
+  const D = DEFAULTS.blogs
   const meta = match
-    ? buildMetadata({
+    ? await pageMetadata({
         title: `${match.name} Articles`,
-        description: `${match.name} articles from DeskTalks: insights from experienced experts, research best practices and articles showing how companies gain clarity and act with confidence.`,
+        description:
+          match.description || `${match.name} articles from DeskTalks. ${D.seo.description}`,
         path: `/blogs?category=${match.slug}`,
       })
-    : buildMetadata({
-        title: 'Blogs',
-        description:
-          'Insights from experienced experts, research best practices and articles showing how companies gain clarity and act with confidence.',
-        path: '/blogs',
-      })
+    : await pageMetadata({ ...globalMeta(page.meta, D.seo), path: '/blogs' })
   return q ? { ...meta, robots: { index: false, follow: true } } : meta
 }
 
@@ -37,10 +36,12 @@ export default async function BlogsPage({ searchParams }: Props) {
   const { category, q, page: pageParam } = await searchParams
   const page = Math.max(1, Number(pageParam) || 1)
 
-  const [categories, posts] = await Promise.all([
+  const [categories, posts, pageCopy] = await Promise.all([
     getCategories(),
     getPosts({ category, search: q, limit: PAGE_SIZE * page }),
+    getBlogsPage(),
   ])
+  const D = DEFAULTS.blogs
 
   const activeCategory = categories.find((c) => c.slug === category)
 
@@ -50,8 +51,14 @@ export default async function BlogsPage({ searchParams }: Props) {
         data={itemListJsonLd(posts.docs.map((p) => ({ name: p.title, path: `/blogs/${p.slug}` })))}
       />
       <PageHero
-        title={activeCategory ? `${activeCategory.name} Articles` : 'Desktalks Blogs'}
-        description="Featuring insights from experienced experts, research best practices and articles showing how we help companies gain clarity and act with confidence."
+        title={
+          activeCategory
+            ? `${activeCategory.name} Articles`
+            : or(pageCopy.hero?.title, D.hero.title)
+        }
+        description={
+          activeCategory?.description || or(pageCopy.hero?.description, D.hero.description)
+        }
       />
 
       <div className="pt-[41px] pb-14">
@@ -74,13 +81,13 @@ export default async function BlogsPage({ searchParams }: Props) {
             page={page}
             hasMore={posts.hasNextPage}
             params={{ category, q }}
-            label="Load More.."
+            label={or(pageCopy.loadMoreLabel, D.loadMoreLabel)}
           />
         </div>
       </div>
 
       <div className="pb-[70px]">
-        <SubscribeBox />
+        <SubscribeSection />
       </div>
     </>
   )

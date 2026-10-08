@@ -22,7 +22,9 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "seed": "cross-env NODE_OPTIONS=--no-deprecation payload run src/seed/index.ts",
     "create-admin": "cross-env NODE_ENV=production NODE_OPTIONS=--no-deprecation PAYLOAD_SECRET=ignore payload run src/scripts/create-admin.ts",
-    "create-admin:local": "cross-env NODE_OPTIONS=--no-deprecation payload run src/scripts/create-admin.ts"
+    "create-admin:local": "cross-env NODE_OPTIONS=--no-deprecation payload run src/scripts/create-admin.ts",
+    "fill-defaults": "cross-env NODE_ENV=production NODE_OPTIONS=--no-deprecation PAYLOAD_SECRET=ignore payload run src/scripts/fill-defaults.ts",
+    "fill-defaults:local": "cross-env NODE_OPTIONS=--no-deprecation payload run src/scripts/fill-defaults.ts"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "1.20.1",
