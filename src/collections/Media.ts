@@ -23,6 +23,11 @@ export const Media: CollectionConfig = {
   ],
   upload: {
     mimeTypes: ['image/*'],
+    // Browsers keep images for a day and may reuse them for a week while refreshing in the background.
+    modifyResponseHeaders: ({ headers }) => {
+      headers.set('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800')
+      return headers
+    },
     // These are not supported on Workers yet due to lack of sharp
     crop: false,
     focalPoint: false,

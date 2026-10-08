@@ -17,6 +17,23 @@ const nextConfig: NextConfig = {
   // local SQLite state (SQLITE_BUSY), which randomly fails `next build`.
   experimental: { cpus: 1 },
 
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          // Same-origin requests keep the full URL (the admin setup link relies on it).
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+      { source: '/admin/:path*', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] },
+    ]
+  },
+
   // Old query-string join URLs -> dedicated, indexable pages
   async redirects() {
     return [

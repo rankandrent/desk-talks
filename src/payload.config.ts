@@ -8,7 +8,7 @@ import {
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 import { seoPlugin } from '@payloadcms/plugin-seo'
-import { buildConfig } from 'payload'
+import { buildConfig, type CollectionConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import { CloudflareContext, getCloudflareContext } from '@opennextjs/cloudflare'
 import { GetPlatformProxyOptions } from 'wrangler'
@@ -26,6 +26,7 @@ import { Submissions } from './collections/Submissions'
 import { Subscribers } from './collections/Subscribers'
 import { Users } from './collections/Users'
 import { SiteSettings } from './globals/SiteSettings'
+import { revalidateAfterChange, revalidateAfterDelete, revalidateGlobal } from './hooks/revalidate'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -72,6 +73,16 @@ const cloudflare =
     ? await getCloudflareContextFromWrangler()
     : await getCloudflareContext({ async: true })
 
+// Collections shown on the public site: changing them clears the page cache.
+const withRevalidation = <T extends CollectionConfig>(collection: T): T => ({
+  ...collection,
+  hooks: {
+    ...collection.hooks,
+    afterChange: [...(collection.hooks?.afterChange ?? []), revalidateAfterChange],
+    afterDelete: [...(collection.hooks?.afterDelete ?? []), revalidateAfterDelete],
+  },
+})
+
 const siteUrl = process.env.SITE_URL || 'http://localhost:3000'
 
 export default buildConfig({
@@ -91,11 +102,22 @@ export default buildConfig({
       },
     },
   },
-  collections: [Podcasts, Posts, Categories, People, Media, Pages, Submissions, Subscribers, Users, ErrorLogs],
+  collections: [
+    ...[Podcasts, Posts, Categories, People, Media, Pages].map(withRevalidation),
+    Submissions,
+    Subscribers,
+    Users,
+    ErrorLogs,
+  ],
   hooks: {
     afterError: [logErrorToDatabase],
   },
-  globals: [SiteSettings],
+  globals: [
+    {
+      ...SiteSettings,
+      hooks: { ...SiteSettings.hooks, afterChange: [...(SiteSettings.hooks?.afterChange ?? []), revalidateGlobal] },
+    },
+  ],
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [
       ...defaultFeatures.filter((feature) => feature.key !== 'heading'),

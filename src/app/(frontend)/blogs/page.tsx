@@ -5,18 +5,33 @@ import { Filters } from '@/components/Filters'
 import { LoadMore } from '@/components/LoadMore'
 import { PageHero } from '@/components/PageHero'
 import { SubscribeBox } from '@/components/SubscribeBox'
+import { buildMetadata, itemListJsonLd } from '@/lib/seo'
+import { JsonLd } from '@/components/JsonLd'
 import { getCategories, getPosts, PAGE_SIZE } from '@/lib/queries'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = {
-  title: 'Blogs',
-  description:
-    'Insights from experienced experts, research best practices and articles showing how companies gain clarity and act with confidence.',
-  alternates: { canonical: '/blogs' },
-}
-
 type Props = { searchParams: Promise<{ category?: string; q?: string; page?: string }> }
+
+// Category views are real landing pages ("AI Research Articles"), so they get their own title and
+// canonical; search and paging point back to the clean URL.
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const { category, q } = await searchParams
+  const match = category ? (await getCategories()).find((c) => c.slug === category) : undefined
+  const meta = match
+    ? buildMetadata({
+        title: `${match.name} Articles`,
+        description: `${match.name} articles from DeskTalks: insights from experienced experts, research best practices and articles showing how companies gain clarity and act with confidence.`,
+        path: `/blogs?category=${match.slug}`,
+      })
+    : buildMetadata({
+        title: 'Blogs',
+        description:
+          'Insights from experienced experts, research best practices and articles showing how companies gain clarity and act with confidence.',
+        path: '/blogs',
+      })
+  return q ? { ...meta, robots: { index: false, follow: true } } : meta
+}
 
 export default async function BlogsPage({ searchParams }: Props) {
   const { category, q, page: pageParam } = await searchParams
@@ -27,10 +42,15 @@ export default async function BlogsPage({ searchParams }: Props) {
     getPosts({ category, search: q, limit: PAGE_SIZE * page }),
   ])
 
+  const activeCategory = categories.find((c) => c.slug === category)
+
   return (
     <>
+      <JsonLd
+        data={itemListJsonLd(posts.docs.map((p) => ({ name: p.title, path: `/blogs/${p.slug}` })))}
+      />
       <PageHero
-        title="Desktalks Blogs"
+        title={activeCategory ? `${activeCategory.name} Articles` : 'Desktalks Blogs'}
         description="Featuring insights from experienced experts, research best practices and articles showing how we help companies gain clarity and act with confidence."
       />
 
@@ -45,7 +65,9 @@ export default async function BlogsPage({ searchParams }: Props) {
               ))}
             </div>
           ) : (
-            <p className="py-16 text-center text-ink-500">No articles found. Try another category or search.</p>
+            <p className="py-16 text-center text-ink-500">
+              No articles found. Try another category or search.
+            </p>
           )}
           <LoadMore
             basePath="/blogs"

@@ -5,15 +5,18 @@ import { notFound } from 'next/navigation'
 import { BlogCard } from '@/components/BlogCard'
 import { Faqs } from '@/components/Faqs'
 import { LinkedInIcon } from '@/components/icons'
-import { extractToc, RichText } from '@/components/RichText'
+import { extractText, extractToc, RichText } from '@/components/RichText'
 import { ShareButtons } from '@/components/ShareButtons'
 import { SummarizeWithAI } from '@/components/SummarizeWithAI'
+import { JsonLd } from '@/components/JsonLd'
 import { TableOfContents } from '@/components/TableOfContents'
 import { SITE_URL } from '@/lib/payload'
 import { getPostBySlug, getPosts, getSettings } from '@/lib/queries'
+import { absoluteUrl, breadcrumbJsonLd, buildMetadata } from '@/lib/seo'
 import { categoryOf, formatDate, mediaAlt, mediaUrl, personOf } from '@/lib/utils'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600
+export const generateStaticParams = (): { slug: string }[] => []
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -21,18 +24,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const post = await getPostBySlug(slug)
   if (!post) return {}
-  const image = mediaUrl(post.meta?.image) ?? mediaUrl(post.featuredImage)
-  return {
-    title: { absolute: post.meta?.title || `${post.title} | DeskTalks` },
+  return buildMetadata({
+    // Long headlines drop the " | DeskTalks" suffix automatically (see pageTitle).
+    title: post.meta?.title || post.title,
+    fullTitle: Boolean(post.meta?.title),
     description: post.meta?.description || post.excerpt,
-    alternates: { canonical: `/blogs/${post.slug}` },
-    openGraph: {
-      type: 'article',
-      publishedTime: post.publishedAt ?? undefined,
-      modifiedTime: post.contentUpdatedAt ?? undefined,
-      images: image ? [image] : undefined,
-    },
-  }
+    path: `/blogs/${post.slug}`,
+    image: mediaUrl(post.meta?.image) ?? mediaUrl(post.featuredImage),
+    type: 'article',
+    publishedTime: post.publishedAt,
+    modifiedTime: post.contentUpdatedAt,
+  })
 }
 
 export default async function BlogPage({ params }: Props) {
@@ -61,6 +63,8 @@ export default async function BlogPage({ params }: Props) {
   const url = `${SITE_URL}/blogs/${post.slug}`
   const cta = settings.blogCta
   const showUpdated = Boolean(post.contentUpdatedAt)
+  const words = extractText(post.content).split(/\s+/).filter(Boolean).length
+  const readMinutes = Math.max(1, Math.round(words / 220))
 
   const jsonLd = [
     {
@@ -68,12 +72,20 @@ export default async function BlogPage({ params }: Props) {
       '@type': 'BlogPosting',
       headline: post.title,
       description: post.excerpt,
-      image: mediaUrl(post.featuredImage),
+      image: mediaUrl(post.featuredImage) ? absoluteUrl(mediaUrl(post.featuredImage)!) : undefined,
       datePublished: post.publishedAt,
       dateModified: post.contentUpdatedAt ?? post.publishedAt,
       author: author ? { '@type': 'Person', name: author.name, sameAs: author.linkedin ?? undefined } : undefined,
-      publisher: { '@type': 'Organization', name: 'DeskTalks', url: SITE_URL },
+      publisher: {
+        '@type': 'Organization',
+        name: 'DeskTalks',
+        url: SITE_URL,
+        logo: { '@type': 'ImageObject', url: absoluteUrl('/icon-512.png') },
+      },
       mainEntityOfPage: url,
+      articleSection: category?.name,
+      wordCount: words,
+      timeRequired: `PT${readMinutes}M`,
     },
     ...(faqs.length
       ? [
@@ -92,7 +104,17 @@ export default async function BlogPage({ params }: Props) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <JsonLd
+        data={[
+          ...jsonLd,
+          breadcrumbJsonLd([
+            { name: 'Home', path: '/' },
+            { name: 'Blogs', path: '/blogs' },
+            ...(category ? [{ name: category.name, path: `/blogs?category=${category.slug}` }] : []),
+            { name: post.title, path: `/blogs/${post.slug}` },
+          ]),
+        ]}
+      />
 
       {/* Hero */}
       <section className="bg-ink-50 font-inter">
@@ -119,6 +141,7 @@ export default async function BlogPage({ params }: Props) {
                   </time>
                 </span>
               )}
+              <span className="text-ink-500">{readMinutes} min read</span>
             </p>
           </div>
           {mediaUrl(post.featuredImage) && (
@@ -126,6 +149,7 @@ export default async function BlogPage({ params }: Props) {
             <img
               src={mediaUrl(post.featuredImage)}
               alt={mediaAlt(post.featuredImage, post.title)}
+              fetchPriority="high"
               className="aspect-[548/314] w-full rounded-[4px] object-cover"
             />
           )}

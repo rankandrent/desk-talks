@@ -1,18 +1,17 @@
-import type { Metadata } from 'next'
-
 import { CommunitySection } from '@/components/CommunitySection'
 import { Testimonials } from '@/components/Testimonials'
 import { getSettings, getTestimonials } from '@/lib/queries'
+import { buildMetadata } from '@/lib/seo'
 import { mediaUrl } from '@/lib/utils'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: 'About Us',
   description:
-    'DeskTalks hosts technology leaders across startups and Fortune 500 companies as they share real-world experiences, bold ideas and insights.',
-  alternates: { canonical: '/about' },
-}
+    'DeskTalks hosts technology leaders across startups and Fortune 500 companies as they share real-world experiences, bold ideas and insights on how technology is reshaping business.',
+  path: '/about',
+})
 
 export default async function AboutPage() {
   const [settings, people] = await Promise.all([getSettings(), getTestimonials()])

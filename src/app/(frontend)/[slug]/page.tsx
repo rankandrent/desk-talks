@@ -2,10 +2,13 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import { PageHero } from '@/components/PageHero'
-import { RichText } from '@/components/RichText'
+import { extractText, RichText } from '@/components/RichText'
+import { buildMetadata } from '@/lib/seo'
+import { mediaUrl } from '@/lib/utils'
 import { getPageBySlug } from '@/lib/queries'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600
+export const generateStaticParams = (): { slug: string }[] => []
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -13,11 +16,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const page = await getPageBySlug(slug)
   if (!page) return {}
-  return {
-    title: page.meta?.title ? { absolute: page.meta.title } : page.title,
-    description: page.meta?.description ?? undefined,
-    alternates: { canonical: `/${page.slug}` },
-  }
+  // Fall back to the opening text of the page when no SEO description was written.
+  const intro = extractText(page.content).slice(0, 300)
+  return buildMetadata({
+    title: page.meta?.title || page.title,
+    fullTitle: Boolean(page.meta?.title),
+    description: page.meta?.description || intro,
+    path: `/${page.slug}`,
+    image: mediaUrl(page.meta?.image),
+  })
 }
 
 export default async function LegalPage({ params }: Props) {

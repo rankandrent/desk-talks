@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { EnquiryForm } from '@/components/EnquiryForm'
+import { buildMetadata } from '@/lib/seo'
 import { cn } from '@/lib/utils'
 
 export type JoinType = 'guest' | 'host'
@@ -12,24 +13,24 @@ export const JOIN_PAGES: Record<JoinType, { path: string; tab: string; title: st
     tab: 'Join as Guest',
     title: 'Join Us as a Podcast Guest',
     text: 'Have expertise, experience, or a story worth sharing? We’re always looking for industry leaders, specialists, founders, and change-makers to join our conversations.',
-    metadata: {
+    metadata: buildMetadata({
       title: 'Join as a Podcast Guest',
       description:
         'Share your expertise on DeskTalks. We invite industry leaders, specialists, founders and change-makers to join our podcast conversations on tech and leadership.',
-      alternates: { canonical: '/join-as-guest' },
-    },
+      path: '/join-as-guest',
+    }),
   },
   host: {
     path: '/join-as-host',
     tab: 'Join as Host',
     title: 'Become a Podcast Host',
     text: 'Have a perspective worth sharing and a passion for meaningful conversations? Join our podcast community as a host and help bring expert voices and ideas to the forefront.',
-    metadata: {
+    metadata: buildMetadata({
       title: 'Become a Podcast Host',
       description:
         'Become a DeskTalks podcast host. Lead meaningful conversations with tech leaders and bring expert voices and ideas to the forefront.',
-      alternates: { canonical: '/join-as-host' },
-    },
+      path: '/join-as-host',
+    }),
   },
 }
 

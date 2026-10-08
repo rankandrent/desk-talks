@@ -13,6 +13,10 @@ type LexicalNode = { type?: string; text?: string; tag?: string; children?: Lexi
 export const nodeText = (node: LexicalNode): string =>
   node.text ?? (node.children ?? []).map(nodeText).join('')
 
+/** Plain text of a rich-text document (meta descriptions, reading time). */
+export const extractText = (data?: SerializedEditorState | null) =>
+  ((data?.root as LexicalNode | undefined)?.children ?? []).map(nodeText).join(' ').replace(/\s+/g, ' ').trim()
+
 /** H2 headings become the "In this Article" table of contents. */
 export const extractToc = (data?: SerializedEditorState | null) => {
   const root = (data?.root as LexicalNode | undefined)?.children ?? []

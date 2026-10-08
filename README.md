@@ -70,6 +70,13 @@ Needs the **Workers Paid** plan (the Payload bundle is above the free plan's siz
    pnpm wrangler d1 create desktalks
    pnpm wrangler r2 bucket create desktalks
    ```
-3. Set secrets: `pnpm wrangler secret put PAYLOAD_SECRET` and set `SITE_URL` to the live domain.
+3. Set secrets: `pnpm wrangler secret put PAYLOAD_SECRET`. Set the live domain as `SITE_URL` in **both** `wrangler.jsonc` (runtime) and `.env.production` (pages prerendered at build).
 4. After any schema change: `pnpm payload migrate:create`
 5. `pnpm run deploy` (runs migrations on D1, builds and deploys the Worker)
+
+## Speed & SEO
+
+- Pages are cached (ISR) on Cloudflare: HTML in the `desktalks-cache` R2 bucket, invalidations in the `desktalks-cache` D1 database. Every publish/edit/delete in the dashboard clears the cache (`src/hooks/revalidate.ts`). Home refreshes every 10 minutes (Next Episode), detail pages every hour. Listing pages with filters/search stay dynamic.
+- Every page: unique title (≤60 chars) and description (≤155), canonical, Open Graph + Twitter image (default `public/og-image.jpg`).
+- Structured data: Organization, WebSite, PodcastEpisode (+ VideoObject for YouTube episodes), BlogPosting, FAQPage, BreadcrumbList, ItemList.
+- `robots.txt` (app root), `sitemap.xml` (incl. category pages), `feed.xml` (blogs RSS).

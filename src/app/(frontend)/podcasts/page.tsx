@@ -5,18 +5,33 @@ import { LoadMore } from '@/components/LoadMore'
 import { PageHero } from '@/components/PageHero'
 import { PodcastCard } from '@/components/PodcastCard'
 import { SubscribeBox } from '@/components/SubscribeBox'
+import { buildMetadata, itemListJsonLd } from '@/lib/seo'
+import { JsonLd } from '@/components/JsonLd'
 import { getCategories, getPodcasts, PAGE_SIZE } from '@/lib/queries'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = {
-  title: 'Podcasts',
-  description:
-    'Listen to the voices shaping the future of tech & leadership. Insights from experienced experts, research best practices and more.',
-  alternates: { canonical: '/podcasts' },
-}
-
 type Props = { searchParams: Promise<{ category?: string; q?: string; page?: string }> }
+
+// Category views are real landing pages ("AI Research Podcasts"), so they get their own title and
+// canonical; search and paging point back to the clean URL.
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const { category, q } = await searchParams
+  const match = category ? (await getCategories()).find((c) => c.slug === category) : undefined
+  const meta = match
+    ? buildMetadata({
+        title: `${match.name} Podcasts`,
+        description: `${match.name} podcasts from DeskTalks: listen to the voices shaping the future of tech & leadership. Insights from experienced experts, research best practices and more.`,
+        path: `/podcasts?category=${match.slug}`,
+      })
+    : buildMetadata({
+        title: 'Podcasts',
+        description:
+          'Listen to the voices shaping the future of tech & leadership. Insights from experienced experts, research best practices and more.',
+        path: '/podcasts',
+      })
+  return q ? { ...meta, robots: { index: false, follow: true } } : meta
+}
 
 export default async function PodcastsPage({ searchParams }: Props) {
   const { category, q, page: pageParam } = await searchParams
@@ -27,11 +42,22 @@ export default async function PodcastsPage({ searchParams }: Props) {
     getPodcasts({ category, search: q, limit: PAGE_SIZE * page }),
   ])
 
+  const activeCategory = categories.find((c) => c.slug === category)
+
   return (
     <>
+      <JsonLd
+        data={itemListJsonLd(
+          podcasts.docs.map((p) => ({ name: p.title, path: `/podcasts/${p.slug}` })),
+        )}
+      />
       <PageHero
         waveform
-        title="Listen to the voices shaping the Future of Tech & leadership"
+        title={
+          activeCategory
+            ? `${activeCategory.name} Podcasts`
+            : 'Listen to the voices shaping the Future of Tech & leadership'
+        }
         description="Featuring insights from experienced experts, research best practices and companies gain clarity and act with confidence."
       />
 
@@ -46,7 +72,9 @@ export default async function PodcastsPage({ searchParams }: Props) {
               ))}
             </div>
           ) : (
-            <p className="py-16 text-center text-ink-500">No podcasts found. Try another category or search.</p>
+            <p className="py-16 text-center text-ink-500">
+              No podcasts found. Try another category or search.
+            </p>
           )}
           <LoadMore
             basePath="/podcasts"

@@ -10,12 +10,16 @@ import { PodcastCard } from '@/components/PodcastCard'
 import { RichText } from '@/components/RichText'
 import { ShareButtons } from '@/components/ShareButtons'
 import { Waveform } from '@/components/Waveform'
-import { soundCloudEmbed, spotifyEmbed, youTubeEmbed } from '@/lib/embeds'
+import { JsonLd } from '@/components/JsonLd'
+import { soundCloudEmbed, spotifyEmbed, youTubeEmbed, youTubeId } from '@/lib/embeds'
 import { SITE_URL } from '@/lib/payload'
 import { countPodcastsInCategory, getPodcastBySlug, getPodcasts, getSettings } from '@/lib/queries'
+import { absoluteUrl, breadcrumbJsonLd, buildMetadata } from '@/lib/seo'
 import { categoryOf, formatDate, mediaUrl, personOf } from '@/lib/utils'
 
-export const dynamic = 'force-dynamic'
+// Cached; hourly refresh makes scheduled episodes go live within an hour of release.
+export const revalidate = 3600
+export const generateStaticParams = (): { slug: string }[] => []
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -23,13 +27,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const podcast = await getPodcastBySlug(slug)
   if (!podcast) return {}
-  const image = mediaUrl(podcast.meta?.image) ?? mediaUrl(podcast.heroImage) ?? mediaUrl(podcast.thumbnail)
-  return {
-    title: { absolute: podcast.meta?.title || `${podcast.title} | DeskTalks Podcast` },
-    description: podcast.meta?.description || podcast.excerpt || undefined,
-    alternates: { canonical: `/podcasts/${podcast.slug}` },
-    openGraph: { type: 'video.episode', images: image ? [image] : undefined },
-  }
+  return buildMetadata({
+    title: podcast.meta?.title || `${podcast.title} | DeskTalks Podcast`,
+    fullTitle: true,
+    description: podcast.meta?.description || podcast.excerpt,
+    path: `/podcasts/${podcast.slug}`,
+    image: mediaUrl(podcast.meta?.image) ?? mediaUrl(podcast.heroImage) ?? mediaUrl(podcast.thumbnail),
+    type: 'video.episode',
+  })
+}
+
+/** "42 min" / "1h 5m" -> ISO 8601 duration for schema.org. */
+const isoDuration = (text?: string | null) => {
+  const h = Number(text?.match(/(\d+)\s*h/i)?.[1] ?? 0)
+  const m = Number(text?.match(/(\d+)\s*m/i)?.[1] ?? 0)
+  return h || m ? `PT${h ? `${h}H` : ''}${m ? `${m}M` : ''}` : undefined
 }
 
 export default async function PodcastPage({ params }: Props) {
@@ -62,20 +74,49 @@ export default async function PodcastPage({ params }: Props) {
     youTubeEmbed(podcast.links?.youtube) ?? spotifyEmbed(podcast.links?.spotify) ?? soundCloudEmbed(podcast.links?.soundcloud)
   const isVideo = Boolean(youTubeEmbed(podcast.links?.youtube))
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'PodcastEpisode',
-    name: podcast.title,
-    url,
-    datePublished: podcast.releaseDate,
-    description: podcast.excerpt ?? undefined,
-    image: heroImage,
-    partOfSeries: { '@type': 'PodcastSeries', name: 'DeskTalks', url: SITE_URL },
-  }
+  const videoId = youTubeId(podcast.links?.youtube)
+  const people = [host, ...guests].filter((p) => p !== undefined)
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'PodcastEpisode',
+      name: podcast.title,
+      url,
+      datePublished: podcast.releaseDate,
+      description: podcast.excerpt ?? undefined,
+      image: heroImage ? absoluteUrl(heroImage) : undefined,
+      timeRequired: isoDuration(podcast.duration),
+      actor: people.map((p) => ({ '@type': 'Person', name: p.name, sameAs: p.linkedin ?? undefined })),
+      partOfSeries: { '@type': 'PodcastSeries', name: 'DeskTalks', url: SITE_URL },
+      sameAs: [podcast.links?.youtube, podcast.links?.spotify, podcast.links?.soundcloud].filter(Boolean),
+    },
+    // Video rich result in Google when the episode is on YouTube.
+    ...(videoId
+      ? [
+          {
+            '@context': 'https://schema.org',
+            '@type': 'VideoObject',
+            name: podcast.title,
+            description: podcast.excerpt || podcast.title,
+            thumbnailUrl: [`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`],
+            uploadDate: podcast.releaseDate,
+            duration: isoDuration(podcast.duration),
+            embedUrl: `https://www.youtube.com/embed/${videoId}`,
+            contentUrl: podcast.links?.youtube,
+          },
+        ]
+      : []),
+    breadcrumbJsonLd([
+      { name: 'Home', path: '/' },
+      { name: 'Podcasts', path: '/podcasts' },
+      ...(category ? [{ name: category.name, path: `/podcasts?category=${category.slug}` }] : []),
+      { name: podcast.title, path: `/podcasts/${podcast.slug}` },
+    ]),
+  ]
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <JsonLd data={jsonLd} />
 
       {/* Hero */}
       <section className="px-4 pt-6 sm:px-[25px]">
@@ -111,6 +152,7 @@ export default async function PodcastPage({ params }: Props) {
             <img
               src={heroImage}
               alt={podcast.title}
+              fetchPriority="high"
               className="h-full max-h-[424px] w-full self-end object-cover object-bottom md:object-right"
             />
           )}

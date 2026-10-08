@@ -28,13 +28,19 @@
       "database_name": "desktalks",
       "remote": true,
     },
+    // Page cache: which cached pages were invalidated (revalidatePath / revalidateTag)
+    {
+      "binding": "NEXT_TAG_CACHE_D1",
+      "database_id": "7ae0353e-2129-402e-a3a4-df3d1b20a332",
+      "database_name": "desktalks-cache",
+    },
   ],
   "services": [
-    // The service should match the "name" of your worker
-    // {
-    //   "binding": "WORKER_SELF_REFERENCE",
-    //   "service": "desktalks"
-    // },
+    // Lets the Worker regenerate cached pages in the background (ISR)
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "desktalks",
+    },
   ],
   "r2_buckets": [
     {
@@ -42,11 +48,11 @@
       "bucket_name": "desktalks",
       "remote": true,
     },
-    // Create a R2 binding with the binding name "NEXT_INC_CACHE_R2_BUCKET"
-    // {
-    //   "binding": "NEXT_INC_CACHE_R2_BUCKET",
-    //   "bucket_name": "<BUCKET_NAME>",
-    // },
+    // Page cache: rendered HTML of cached pages
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "desktalks-cache",
+    },
   ],
 
   // Here's how to configure an additional environment

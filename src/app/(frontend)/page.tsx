@@ -7,10 +7,27 @@ import { ArrowUpRightIcon, PlayIcon } from '@/components/icons'
 import { NextEpisode } from '@/components/NextEpisode'
 import { PodcastCarousel } from '@/components/PodcastCarousel'
 import { SubscribeBox } from '@/components/SubscribeBox'
-import { getFeaturedPodcast, getNextPodcast, getPodcasts, getPosts, getSettings } from '@/lib/queries'
+import {
+  getFeaturedPodcast,
+  getNextPodcast,
+  getPodcasts,
+  getPosts,
+  getSettings,
+} from '@/lib/queries'
+import { JsonLd } from '@/components/JsonLd'
+import { buildMetadata, organizationJsonLd, websiteJsonLd } from '@/lib/seo'
 import { mediaAlt, mediaUrl } from '@/lib/utils'
 
-export const dynamic = 'force-dynamic'
+// Cached; refreshed every 10 min (Next Episode depends on time) and on every publish.
+export const revalidate = 600
+
+export const metadata = buildMetadata({
+  title: 'DeskTalks | Where Expert Conversations Become Community',
+  fullTitle: true,
+  description:
+    'DeskTalks podcast: conversations with tech leaders from startups to Fortune 500 companies on AI, research, technology and leadership. Listen, read and join.',
+  path: '/',
+})
 
 export default async function HomePage() {
   const [featured, nextPodcast, podcasts, posts, settings] = await Promise.all([
@@ -25,6 +42,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
       {/* Hero */}
       <section className="container-site grid items-center gap-12 pt-14 pb-20 lg:grid-cols-[1fr_518px] lg:gap-[60px] lg:pt-[75px] lg:pl-[99px]">
         <div>
@@ -32,8 +50,8 @@ export default async function HomePage() {
             Where Expert Conversations Become Community
           </h1>
           <p className="mt-7 max-w-[410px] text-[16px] leading-[1.4] text-ink-700">
-            Discover expert insights through podcasts, connect with a global community, and join events that
-            inspire meaningful conversations and lasting connections.
+            Discover expert insights through podcasts, connect with a global community, and join
+            events that inspire meaningful conversations and lasting connections.
           </p>
           <div className="mt-5 flex flex-wrap gap-[11px]">
             <Link href="/join-as-host" className="btn-outline px-[17px] text-[17px]">
@@ -55,6 +73,7 @@ export default async function HomePage() {
               <img
                 src={heroImage}
                 alt={mediaAlt(featured.heroImage ?? featured.thumbnail, featured.title)}
+                fetchPriority="high"
                 className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               />
             )}
@@ -114,8 +133,8 @@ export default async function HomePage() {
               How can we help you today?
             </h2>
             <p className="mt-6 max-w-[340px] text-[16px] leading-[1.4] text-ink-700">
-              Have a question, partnership idea, or just want to learn more? Send us a message and our team will
-              get back to you.
+              Have a question, partnership idea, or just want to learn more? Send us a message and
+              our team will get back to you.
             </p>
           </div>
           <EnquiryForm type="contact" showJoinLink />
