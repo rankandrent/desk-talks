@@ -27,7 +27,7 @@ export function Filters({
 
   const chip = (isActive: boolean) =>
     cn(
-      'shrink-0 rounded-[3px] border px-5 py-2 font-inter text-[13px] transition-colors',
+      'shrink-0 rounded-[3px] border px-5 py-2 font-inter text-[12px] transition-colors',
       isActive ? 'border-sun-500 bg-sun-500 text-black' : 'border-ink-700 bg-white text-black hover:bg-sun-50',
     )
 

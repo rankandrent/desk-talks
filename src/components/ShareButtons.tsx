@@ -20,7 +20,7 @@ export function ShareButtons({ url, title }: { url: string; title: string }) {
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <span className="mr-1 font-inter text-[24px] font-light text-ink-800">Share on:</span>
+      <span className="mr-1 font-inter text-[22px] font-light text-ink-800">Share on:</span>
       {links.map(({ label, href, Icon }) => (
         <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={`Share on ${label}`} className={btn}>
           <Icon className="size-[18px]" />

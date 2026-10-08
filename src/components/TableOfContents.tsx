@@ -27,7 +27,7 @@ export function TableOfContents({ items }: { items: { id: string; text: string }
   if (!items.length) return null
 
   return (
-    <nav aria-label="In this article">
+    <nav aria-label="In this article" className="max-w-[340px]">
       <p className="border-b border-ink-900 pb-3 font-inter text-[24px] text-ink-900">In this Article</p>
       <ol className="mt-3 space-y-2.5">
         {items.map((item) => (
@@ -35,7 +35,7 @@ export function TableOfContents({ items }: { items: { id: string; text: string }
             <a
               href={`#${item.id}`}
               className={cn(
-                'block font-inter text-[13px] leading-snug transition-colors hover:text-sun-700',
+                'block font-inter text-[12px] leading-snug transition-colors hover:text-sun-700',
                 active === item.id ? 'text-sun-700' : 'text-ink-800',
               )}
             >

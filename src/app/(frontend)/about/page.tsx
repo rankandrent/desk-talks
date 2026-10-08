@@ -32,15 +32,15 @@ export default async function AboutPage() {
     <>
       {/* Hero */}
       <section className="px-4 pt-7 sm:px-[25px]">
-        <div className="mx-auto grid max-w-[1230px] overflow-hidden rounded-[32px] bg-hero md:grid-cols-[470px_1fr]">
-          <h1 className="p-8 text-[38px] leading-[1.2] font-semibold text-black sm:p-[45px] sm:text-[50px] md:py-[65px]">
+        <div className="mx-auto grid max-w-[1230px] overflow-hidden rounded-[32px] bg-hero md:h-[424px] md:grid-cols-[518px_1fr]">
+          <h1 className="p-8 text-[38px] leading-[1.2] font-semibold text-black sm:p-[45px] sm:text-[48px] md:self-center md:py-0 md:pr-6">
             {or(page.hero?.title, D.hero.title)}
           </h1>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={mediaUrl(page.hero?.image) ?? '/images/about-hero.png'}
             alt={mediaAlt(page.hero?.image, 'Tech leaders featured on DeskTalks')}
-            className="h-full w-full self-end object-cover object-left-bottom md:mt-20"
+            className="h-full w-full self-end object-cover object-left-bottom md:max-h-[344px]"
           />
         </div>
       </section>
@@ -54,7 +54,7 @@ export default async function AboutPage() {
           className="aspect-[566/288] w-full rounded-[20px] object-cover"
         />
         <div>
-          <h2 className="text-[40px] font-semibold text-black sm:text-[50px]">
+          <h2 className="text-[40px] font-semibold text-black sm:text-[48px]">
             {or(page.whatWeDo?.heading, D.whatWeDo.heading)}
           </h2>
           <p className="mt-6 max-w-[330px] text-[16px] leading-[1.4] text-ink-700">
@@ -65,7 +65,7 @@ export default async function AboutPage() {
 
       {/* Vision */}
       <section className="mx-auto grid max-w-[1280px] gap-6 px-4 py-16 sm:px-8 md:grid-cols-[260px_1fr] md:gap-[60px] lg:px-[183px] lg:py-[60px]">
-        <h2 className="text-[40px] font-semibold text-black sm:text-[50px]">
+        <h2 className="text-[40px] font-semibold text-black sm:text-[48px]">
           {or(page.vision?.heading, D.vision.heading)}
         </h2>
         <div className="max-w-[590px] space-y-5 text-[16px] leading-[1.4] text-ink-700">

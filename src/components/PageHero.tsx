@@ -14,7 +14,7 @@ export function PageHero({
   return (
     <section className="relative overflow-hidden bg-hero">
       <div className="container-site relative z-10 py-20 text-center sm:py-[110px]">
-        <h1 className="mx-auto max-w-[800px] text-[36px] leading-[1.2] font-semibold text-ink-900 sm:text-[50px]">
+        <h1 className="mx-auto max-w-[800px] text-[36px] leading-[1.2] font-semibold text-ink-900 sm:text-[48px]">
           {title}
         </h1>
         {description && (

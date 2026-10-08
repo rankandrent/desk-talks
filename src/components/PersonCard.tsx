@@ -8,7 +8,7 @@ export function PersonCard({ label, person }: { label: string; person: Person })
 
   return (
     <div className="rounded-[7px] border border-ink-900 px-4 py-4">
-      <p className="text-[24px] font-medium text-ink-700 underline underline-offset-4">{label}</p>
+      <p className="text-[20px] font-medium text-ink-700 underline underline-offset-4">{label}</p>
       <p className="mt-3 flex items-center gap-1.5 text-[17px] font-semibold text-ink-800">
         {person.name}
         {person.linkedin && (
@@ -23,7 +23,7 @@ export function PersonCard({ label, person }: { label: string; person: Person })
           </a>
         )}
       </p>
-      {person.designation && <p className="mt-1 text-[17px] leading-snug text-ink-700">{person.designation}</p>}
+      {person.designation && <p className="mt-1 text-[16px] leading-snug text-ink-700">{person.designation}</p>}
       {logo ? (
         <span className="mt-3 inline-flex h-9 items-center rounded-[3px] bg-ink-100 px-2.5">
           {/* eslint-disable-next-line @next/next/no-img-element */}

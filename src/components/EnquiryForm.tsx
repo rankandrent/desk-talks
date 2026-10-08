@@ -93,7 +93,7 @@ export function EnquiryForm({
         <button
           type="submit"
           disabled={pending}
-          className={cn('btn-primary text-[17px] disabled:opacity-60', type === 'contact' ? 'w-full' : 'px-[14px]')}
+          className={cn('btn-primary text-[16px] disabled:opacity-60', type === 'contact' ? 'w-full' : 'px-[14px]')}
         >
           {pending ? 'Sending…' : 'Submit'}
         </button>

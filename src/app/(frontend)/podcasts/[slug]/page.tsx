@@ -139,7 +139,7 @@ export default async function PodcastPage({ params }: Props) {
                 </span>
               </Link>
             )}
-            <h1 className="mt-4 text-[34px] leading-[1.2] font-semibold text-white sm:text-[50px]">{podcast.title}</h1>
+            <h1 className="mt-4 max-w-[540px] text-[34px] leading-[1.2] font-semibold text-white sm:text-[48px]">{podcast.title}</h1>
             <p className="mt-2 text-sm text-white/70">
               {formatDate(podcast.releaseDate)}
               {podcast.duration ? ` · ${podcast.duration}` : ''}
@@ -155,7 +155,7 @@ export default async function PodcastPage({ params }: Props) {
               src={heroImage}
               alt={podcast.title}
               fetchPriority="high"
-              className="h-full max-h-[424px] w-full self-end object-cover object-bottom md:object-right"
+              className="h-full max-h-[424px] w-full self-end object-cover object-bottom md:object-right md:[mask-image:linear-gradient(to_right,transparent,black_22%)]"
             />
           )}
         </div>
@@ -164,8 +164,8 @@ export default async function PodcastPage({ params }: Props) {
       {/* Summary + people */}
       <section className="mx-auto grid max-w-[1280px] gap-10 px-4 pt-12 sm:px-8 lg:grid-cols-[470px_1fr] lg:gap-[57px] lg:pl-[107px]">
         <div>
-          <h2 className="text-[24px] font-medium text-ink-700">Episode Summary:</h2>
-          <RichText data={podcast.summary} className="article !font-sans !text-[17px] !text-ink-700 mt-3" />
+          <h2 className="text-[22px] font-medium text-ink-700">Episode Summary:</h2>
+          <RichText data={podcast.summary} className="article mt-3 !font-sans !text-[16px] !leading-[22px] !text-ink-700 [&_p+p]:mt-[22px]" />
           <div className="mt-8">
             <ShareButtons url={url} title={podcast.title} />
           </div>
@@ -208,7 +208,7 @@ export default async function PodcastPage({ params }: Props) {
           <div className="mt-8 text-center">
             <Link
               href={category ? `/podcasts?category=${category.slug}` : '/podcasts'}
-              className="btn-outline px-[17px] text-[17px]"
+              className="btn-outline px-[17px] text-[16px]"
             >
               View All Podcasts <ArrowUpRightIcon className="size-3.5" />
             </Link>

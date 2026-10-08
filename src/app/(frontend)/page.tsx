@@ -48,7 +48,7 @@ export default async function HomePage() {
       {/* Hero */}
       <section className="container-site grid items-center gap-12 pt-14 pb-20 lg:grid-cols-[1fr_518px] lg:gap-[60px] lg:pt-[75px] lg:pl-[99px]">
         <div>
-          <h1 className="text-[40px] leading-[1.15] font-medium text-black sm:text-[53px]">
+          <h1 className="text-[40px] leading-[1.15] font-semibold text-black sm:text-[48px]">
             {or(hero?.title, D.hero.title)}
           </h1>
           <p className="mt-7 max-w-[410px] text-[16px] leading-[1.4] text-ink-700">
@@ -57,13 +57,13 @@ export default async function HomePage() {
           <div className="mt-5 flex flex-wrap gap-[11px]">
             <Link
               href={or(hero?.hostButtonLink, D.hero.hostButtonLink)}
-              className="btn-outline px-[17px] text-[17px]"
+              className="btn-outline px-[17px] text-[16px]"
             >
               {or(hero?.hostButtonLabel, D.hero.hostButtonLabel)}
             </Link>
             <Link
               href={or(hero?.guestButtonLink, D.hero.guestButtonLink)}
-              className="btn-primary px-[17px] text-[17px]"
+              className="btn-primary px-[17px] text-[16px]"
             >
               {or(hero?.guestButtonLabel, D.hero.guestButtonLabel)}
             </Link>
@@ -99,12 +99,12 @@ export default async function HomePage() {
 
       {/* Podcasts */}
       <section className="pt-8 pb-24">
-        <h2 className="container-site max-w-[860px] text-center text-[34px] leading-[1.2] font-semibold text-balance text-black sm:text-[50px]">
+        <h2 className="mx-auto max-w-[830px] px-4 text-center text-[34px] leading-[1.2] font-semibold text-balance text-black sm:text-[48px]">
           {or(podcastsSection?.heading, D.podcasts.heading)}
         </h2>
         <PodcastCarousel podcasts={podcasts.docs} />
         <div className="mt-9 text-center">
-          <Link href="/podcasts" className="btn-outline px-[17px] text-[17px]">
+          <Link href="/podcasts" className="btn-outline px-[17px] text-[16px]">
             {or(podcastsSection?.buttonLabel, D.podcasts.buttonLabel)}{' '}
             <ArrowUpRightIcon className="size-3.5" />
           </Link>
@@ -133,10 +133,10 @@ export default async function HomePage() {
       )}
 
       {/* Contact */}
-      <section id="contact" className="container-site scroll-mt-24 py-16 lg:pl-[121px]">
+      <section id="contact" className="mx-auto max-w-[1280px] scroll-mt-24 px-4 py-16 sm:px-8 lg:px-[120px]">
         <div className="grid gap-10 lg:grid-cols-[1fr_544px] lg:gap-[90px]">
           <div>
-            <h2 className="text-[40px] leading-[1.2] font-semibold text-black sm:text-[50px]">
+            <h2 className="text-[40px] leading-[1.2] font-semibold text-black sm:text-[48px]">
               {or(contact?.heading, D.contact.heading)}
             </h2>
             <p className="mt-6 max-w-[340px] text-[16px] leading-[1.4] text-ink-700">

@@ -26,7 +26,7 @@ export function Testimonials({ items }: { items: Testimonial[] }) {
         <div className="grid flex-1 items-center gap-10 md:grid-cols-[1fr_314px] md:gap-[90px] lg:px-[75px]" aria-live="polite">
           <div>
             <p className="text-[16px] leading-[1.4] whitespace-pre-line text-ink-700">{item.quote}</p>
-            <p className="mt-9 text-[40px] leading-tight font-semibold text-black sm:text-[50px]">{item.name}</p>
+            <p className="mt-9 text-[40px] leading-tight font-semibold text-black sm:text-[48px]">{item.name}</p>
             {item.designation && <p className="mt-1 text-[16px] text-ink-700">{item.designation}</p>}
           </div>
           {item.photo && (

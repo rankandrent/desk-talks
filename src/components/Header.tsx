@@ -53,7 +53,7 @@ export function Header({
         </nav>
 
         {ctaLabel && (
-          <Link href={ctaLink} className="btn-primary hidden px-[18px] text-[17px] md:inline-flex">
+          <Link href={ctaLink} className="btn-primary hidden px-[18px] text-[16px] md:inline-flex">
             {ctaLabel}
           </Link>
         )}

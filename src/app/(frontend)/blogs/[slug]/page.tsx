@@ -208,7 +208,7 @@ export default async function BlogPage({ params }: Props) {
             <TableOfContents items={toc} />
             <SummarizeWithAI url={url} />
             {cta?.heading && (
-              <div className="rounded-[10px] bg-gradient-to-br from-black via-[#0b1517] to-[#1d3436] px-8 py-7 text-center font-inter text-white">
+              <div className="rounded-[10px] bg-gradient-to-br from-black via-[#0b1517] to-[#1d3436] px-[42px] py-7 text-center font-inter text-white">
                 <p className="text-[24px] leading-[1.35] font-medium">{cta.heading}</p>
                 {cta.text && <p className="mt-3 text-[16px] leading-[1.4] text-white/90">{cta.text}</p>}
                 {cta.buttonLabel && (

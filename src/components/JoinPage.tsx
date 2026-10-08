@@ -42,7 +42,7 @@ export async function JoinPage({ type }: { type: JoinType }) {
   return (
     <>
       <section className="bg-teal-700">
-        <p className="container-site py-16 text-center text-[30px] leading-[1.3] font-medium text-white sm:py-[86px] sm:text-[50px]">
+        <p className="container-site py-16 text-center text-[30px] leading-[1.3] font-medium text-white sm:py-[86px] sm:text-[48px]">
           {copy.banner}
         </p>
       </section>
@@ -66,7 +66,7 @@ export async function JoinPage({ type }: { type: JoinType }) {
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_544px] lg:gap-[110px]">
           <div>
-            <h1 className="text-[38px] leading-[1.2] font-semibold text-black sm:text-[50px]">{copy.title}</h1>
+            <h1 className="text-[38px] leading-[1.2] font-semibold text-black sm:text-[48px]">{copy.title}</h1>
             <p className="mt-6 max-w-[350px] text-[16px] leading-[1.4] text-ink-700">{copy.text}</p>
           </div>
           <EnquiryForm key={type} type={type} />

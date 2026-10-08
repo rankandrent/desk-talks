@@ -29,13 +29,13 @@ export function CommunitySection({
       >
         <div className="grid items-center gap-10 md:grid-cols-2 lg:pl-[75px]">
           <div>
-            <h2 className="text-[40px] leading-[1.15] font-semibold sm:text-[50px]">
+            <h2 className="text-[40px] leading-[1.15] font-semibold sm:text-[48px]">
               {or(c?.title, D.title)}
             </h2>
             <p className={cn('mt-6 max-w-[390px] text-[16px] leading-[1.4]', teal ? 'text-white' : 'text-ink-700')}>
               {or(c?.text, D.text)}
             </p>
-            <Link href={or(c?.buttonLink, D.buttonLink)} className="btn-primary mt-6 px-[18px] text-[17px]">
+            <Link href={or(c?.buttonLink, D.buttonLink)} className="btn-primary mt-6 px-[18px] text-[16px]">
               {or(c?.buttonLabel, D.buttonLabel)} <ArrowUpRightIcon className="size-3.5" />
             </Link>
           </div>
