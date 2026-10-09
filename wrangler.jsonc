@@ -7,7 +7,7 @@
   "observability": { "enabled": true },
   "vars": {
     // Public URL of the site (SEO, sitemap, share links). Change when the custom domain is live.
-    "SITE_URL": "https://desktalks.clientworkt1-2f5.workers.dev",
+    "SITE_URL": "https://desktalks.insightsdesk-com.workers.dev",
   },
   "compatibility_flags": [
     // Enable Node.js API
@@ -24,14 +24,14 @@
   "d1_databases": [
     {
       "binding": "D1",
-      "database_id": "549ef124-5405-4539-a3c3-caa0f8214c62",
+      "database_id": "1a15c129-85ab-4ab6-b1f4-49803094a8a9",
       "database_name": "desktalks",
       "remote": true,
     },
     // Page cache: which cached pages were invalidated (revalidatePath / revalidateTag)
     {
       "binding": "NEXT_TAG_CACHE_D1",
-      "database_id": "7ae0353e-2129-402e-a3a4-df3d1b20a332",
+      "database_id": "295611db-fecb-48f3-84e1-9a4495eca407",
       "database_name": "desktalks-cache",
     },
   ],
@@ -63,7 +63,7 @@
   //     "d1_databases": [
   //       {
   //         "binding": "D1",
-  //         "database_id": "549ef124-5405-4539-a3c3-caa0f8214c62",
+  //         "database_id": "1a15c129-85ab-4ab6-b1f4-49803094a8a9",
   //         "database_name": "my-app-staging",
   //         "remote": true
   //       }
