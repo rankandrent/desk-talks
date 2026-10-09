@@ -15,7 +15,7 @@ export const Posts: CollectionConfig = {
     preview: (doc) => (doc?.slug ? `/blogs/${doc.slug}` : null),
   },
   versions: {
-    drafts: { autosave: { interval: 2000 } },
+    drafts: true,
     maxPerDoc: 25,
   },
   defaultSort: '-publishedAt',

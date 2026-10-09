@@ -15,7 +15,7 @@ export const Podcasts: CollectionConfig = {
     preview: (doc) => (doc?.slug ? `/podcasts/${doc.slug}` : null),
   },
   versions: {
-    drafts: { autosave: { interval: 2000 } },
+    drafts: true,
     maxPerDoc: 25,
   },
   defaultSort: '-releaseDate',

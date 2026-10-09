@@ -1,6 +1,7 @@
 import * as migration_20261006_171137_initial from './20261006_171137_initial';
 import * as migration_20261006_173751_error_logs_and_first_admin from './20261006_173751_error_logs_and_first_admin';
 import * as migration_20261008_195943_editable_pages from './20261008_195943_editable_pages';
+import * as migration_20261009_102443_autosave_off from './20261009_102443_autosave_off';
 
 export const migrations = [
   {
@@ -16,6 +17,11 @@ export const migrations = [
   {
     up: migration_20261008_195943_editable_pages.up,
     down: migration_20261008_195943_editable_pages.down,
-    name: '20261008_195943_editable_pages'
+    name: '20261008_195943_editable_pages',
+  },
+  {
+    up: migration_20261009_102443_autosave_off.up,
+    down: migration_20261009_102443_autosave_off.down,
+    name: '20261009_102443_autosave_off'
   },
 ];
